@@ -1,0 +1,4 @@
+numpy>=1.12.0
+renku-sphinx-theme 
+
+
