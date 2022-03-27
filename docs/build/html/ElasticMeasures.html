@@ -1,0 +1,1419 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Elastic Measures &mdash; tsdistance 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lockstep Measures" href="LockstepMeasures.html" />
+    <link rel="prev" title="tsdistance documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tsdistance
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Elastic Measures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-formula">General Formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-elastic">Dynamic Time Warping (DTW) and DTW variants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-0">DTW Lower Bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-1">Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-2">LCSS Lower Bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-3">Sequence Weighted Alignment (SWALE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-4">Edit Distance with Real Penalty (ERP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-5">ERP Lower Bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-6">Edit Distance on Real Sequences (EDR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-7">Time Warp Edit Distance (TWED)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-8">TWED Lower Bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-9">Move-Split-Merge (MSM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-10">MSM Lower Bound</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SlidingMeasures.html">Sliding Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="KernelMeasures.html">Kernel Measures</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tsdistance</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+<div class="git-ribbon">
+  <a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
+</div>
+
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Elastic Measures</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ElasticMeasures.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="elastic-measures">
+<span id="id1"></span><h1>Elastic Measures<a class="headerlink" href="#elastic-measures" title="Permalink to this headline">¶</a></h1>
+<p>Elastic measures are popular for time series analysis.
+Using elastic measures, the two time series do not need to be the same length, providing much more flexibility.
+The elastic measures implemented in this library include Dynamic Time Warping (DTW),
+its variations such as weighted-DTW and derivative-DTW,
+and edit-based distance measures such as Longest Common Subsequence (LCSS),
+Edit Distance with Real Penalty (ERP), Edit Distance on Real Sequences (EDR), Move Split Merge (MSM),
+and Time Warp Edit Distance (TWED).</p>
+<div class="section" id="general-formula">
+<h2>General Formula<a class="headerlink" href="#general-formula" title="Permalink to this headline">¶</a></h2>
+<p>In general, elastic measures use a dynamic programming algorithm with the goal of minimize the total distance between the two series.
+This has an effect of “aligning” the time series which is useful for time-series that are out-of-sync
+or otherwise unaligned in ways that non-elastic measures could not distinguish.</p>
+<p>Through this section, we will have two time series X and Y represented as such:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    X = x_1,\ x_2,\ x_3,\ ...,\ x_n \\
+    Y = y_1,\ y_2,\ y_3,\ ...,\ y_m \\
+\end{aligned}\end{split}\]</div>
+<p>Additionally, we will have a array of size <span class="math notranslate nohighlight">\((m,n)\)</span> represented as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    DP = d_{1,1},\ d_{1,2},\ ...,\ d_{1,m},\ d_{2,m},\ ...,\ d_{n,m}
+\end{equation*}\]</div>
+<p>As the elastic measures runs, it produces a warping path <span class="math notranslate nohighlight">\(W = w_1, w_2, ..., w_k = (x_1,y_1), (x_i, y_i), ..., (x_n,y_m)\)</span>
+where <span class="math notranslate nohighlight">\(max(m,n) \leq k \leq m + n - 1\)</span>. In warping path element, the algorithm takes one of three steps.
+If <span class="math notranslate nohighlight">\(w_{k-1} = (x_{i-1}, y_i)\)</span>, then the step was horizontal. If <span class="math notranslate nohighlight">\(w_{k-1} = (x_{i}, y_{i-1})\)</span>, then the step was vertical.
+And if <span class="math notranslate nohighlight">\(w_{k-1} = (x_{i-1}, y_{i-1})\)</span>, the step was diagonal.
+Along with this, each elastic measure uses a distance function D to determine the distance between the elements of each time series.
+D can be divided into 4 components, <span class="math notranslate nohighlight">\(D^{v},D^{h},D^d\)</span>, and $D^u$ or distance from a vertical step, distance from a horizontal step,
+distance from a diagonal step, and undirectional distance. These components are the same in some measures and differ in others.
+The elastic distance of the two time series is <span class="math notranslate nohighlight">\(\sum_{i = 1}^{k}D(w_i)\)</span> where <span class="math notranslate nohighlight">\(D\)</span> is one of the component listed above.
+Alternatively, the elastic distance can be written as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation}
+    ElasticDistance(X,Y) = \pi(d_{n,m})
+\end{equation}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+d_{i,j} =
+\begin{cases}
+    D^u(x_i,y_j) &amp; \text{if $i,j = 1$}\\
+    d_{i-1,j} + D^v(x_i,y_j) &amp; \text{if $i \neq 1$ and $j = 1$} \\
+    d_{i,j-1} + D^h(x_i,y_j) &amp; \text{if $i = 1$ and $j \neq 1$} \\
+    min(d_{i-1,j-1} + D^d(x_i,y_j), d_{i-1,j}\\ + D^h(x_i,y_j),
+    d_{i,j-1} + D^v(x_i,y_j)) &amp; \text{if $i, j \neq 1$, $i \leq n$, $j \leq m$}
+\end{cases}
+\end{equation}\end{split}\]</div>
+<p>The function <span class="math notranslate nohighlight">\(\pi\)</span> is a final function depending on the measure.
+Throughout this paper, we will define <span class="math notranslate nohighlight">\(\pi\)</span> and D as a simplistic way to define each function.
+If the the distance function differs depending on the direction that will be detailed in the measure.
+Additionally, certain measures will have other parameters that must be specified. These will be discussed in where applicable.
+In the worst case,
+elastic measures will take <span class="math notranslate nohighlight">\(O(mn)\)</span> time to complete as each item within the time series are compared to each other before the final comparison is computed.
+There are various methods to improve this run-time, such as restricting the range of comparing values.
+Additionally,
+the space complexity in the worst case is an array of <span class="math notranslate nohighlight">\(O(mn)\)</span>
+but this can be reduced to a linear size complexity as only the immediately previous values are used.</p>
+</div>
+<div class="section" id="module-elastic">
+<span id="dynamic-time-warping-dtw-and-dtw-variants"></span><h2>Dynamic Time Warping (DTW) and DTW variants<a class="headerlink" href="#module-elastic" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.dtw">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">dtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.dtw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dynamic Time Warping (DTW) <a href="#id43"><span class="problematic" id="id2">[1]_</span></a> utilizes dynamic programming to find 
+the optimal alignment between elements of times series <span class="math notranslate nohighlight">\(X = (x_{1}, x_{2}, ..., x_{n})\)</span> 
+and <span class="math notranslate nohighlight">\(Y = (y_{1}, y_{2}, ..., y_m)\)</span> by constructing 
+a distance matrix <span class="math notranslate nohighlight">\(M\)</span> of shape <span class="math notranslate nohighlight">\((n, m)\)</span> with the following forumla:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}M_{i, j} = \begin{cases}
+    0, \ i = j = 0 \\
+    d_{x_i, y_j} + min \begin{cases}
+        M_{i-1, j}\\
+        M_{i, j-1} \\
+        M_{i-1, j-1}\\
+        \end{cases} where \ d_{x_i, y_j}=|x_i - y_j|
+\end{cases}\end{split}\]</div>
+<p>and return  the DTW distance <span class="math notranslate nohighlight">\(M_{n, m}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series. <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DTW distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">dtw</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">dtw_dist</span> <span class="o">=</span> <span class="n">dtw</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="s1">&#39;Sakoe-Chiba&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">dtw_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">4</span>.123105625617661
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dd><p>H. Sakoe, S. Chiba, “Dynamic programming algorithm optimization for
+spoken word recognition,” IEEE Transactions on Acoustics, Speech and
+Signal Processing, vol. 26(1), pp. 43–49, 1978.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.ddtw">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">ddtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.ddtw" title="Permalink to this definition">¶</a></dt>
+<dd><p>One weakness of Dynamic Time Warping is the exclusive focus on values rather than “shape” 
+which results in misalignment. 
+Derivative Dynamic Time Warping (DDTW) <a href="#id44"><span class="problematic" id="id4">[1]_</span></a> accounts for “shape” by replacing Euclidean in DTW 
+with squared difference of estimated derivatives of two points from different sequences. 
+The formula for esitmating derivatives are the following:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    d[x_i] = \frac{(x_i-x_{i-1})+(x_{i+1}-x_{i-1})/2}{2} \\
+    D(x_i, y_j) = (d[x_i]-d[y_j])^2
+\end{equation}\end{split}\]</div>
+<p>Since the first and last elements in the sequence are undefined, 
+they are replaced by second and penultimate elements respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series. <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DDTW distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">ddtw</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">ddtw_dist</span> <span class="o">=</span> <span class="n">ddtw</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="s1">&#39;Sakoe-Chiba&#39;</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">fast</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ddtw_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.6571847095819483
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id5"><span class="brackets">1</span></dt>
+<dd><p>Eamonn J. Keogh and Michael J. Pazzani. “Derivative Dynamic Time
+Warping”. In: Proceedings of the 2001 SIAM International Conference on 
+Data Mining (SDM) (2001)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-0">
+<span id="dtw-lower-bounds"></span><h2>DTW Lower Bounds<a class="headerlink" href="#module-0" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_kim">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_kim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_kim" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_Kim <a href="#id45"><span class="problematic" id="id6">[1]_</span></a> is the fastest DTW lower bound with <span class="math notranslate nohighlight">\(O(1)\)</span> complexity, 
+defined as the following:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    LB\_Kim(X, Y) = max\begin{cases}
+    |X_1 - Y_1| \\
+    |X_L - Y_L| \\
+    |X_{max} - Y_{max}| \\
+    |X_{min} - Y_{min}|
+    \end{cases}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Kim distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_kim</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">lb_kim_dist</span> <span class="o">=</span> <span class="n">lb_kim</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_kim_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">1</span>
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets">1</span></dt>
+<dd><p>Sang-Wook Kim, Sanghyun Park, and Wesley W Chu. 2001. An index-based approach for similarity search supporting time warping in large sequence databases.
+In Data Engineering, 2001. Proceedings. 17th International Conference on. IEEE,607–614.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_keogh">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_keogh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_keogh" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_Keogh <a href="#id46"><span class="problematic" id="id8">[1]_</span></a> is one of the most popular dtw lower bounds. 
+LB_Keogh constructs upper and lower envelopes of query series and compute
+distance between these query envelopes and the candidate series, 
+while utilizing a window :math:<code class="docutils literal notranslate"><span class="pre">w</span></code> to limit warping (shifted alignements).
+LB_Keogh is formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+   LB\_Keogh(X, Y) = \sqrt{\sum_{i=1}^{L_X}\begin{cases}
+    (Y_{i} - UE_{i} )^2 \mbox{ if } Y_{i} &gt; UE_{i} \\
+    (Y_{i} - LE_{i})^2 \mbox{ if } Y_{i} &lt; LE_{i} \\
+    0 \mbox{ otherwise  }
+    \end{cases}}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Keogh distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">elastic</span> <span class="kn">import</span> <span class="n">lb_keogh</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">lb_keogh_dist</span> <span class="o">=</span> <span class="n">lb_keogh</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_keogh_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">17</span>.029386365926403
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id9"><span class="brackets">1</span></dt>
+<dd><p>Eamonn Keogh and Chotirat Ann Ratanamahatana. 2005. Exact indexing of
+dynamic time warping. Knowledge and Information Systems 7, 3 (2005), 358–386.
+[49] Eamonn J. Keogh and Michael J. Pazzani. 2001. Derivative Dynamic Time Warping.
+Proceedings of the 2001 SIAM International Conference on Data Mining (SDM)
+(2001).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_new">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_New <a href="#id47"><span class="problematic" id="id10">[1]_</span></a> is a tighter and more expensive lower bound of DTW relative to LB_Keogh.
+LB_New is formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation}
+    LB\_New = \sqrt{(x_1 - y_1)^2 + (x_{L_X}-y_{L_Y})^2 + \sum_{j=2}^{L_x-1}\delta(x_j, Y_i)}
+\end{equation}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_New distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_new</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">lb_new_dist</span> <span class="o">=</span> <span class="n">lb_new</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_new_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">17</span>.08800749063506
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id11"><span class="brackets">1</span></dt>
+<dd><p>Yilin Shen, Yanping Chen, Eamonn Keogh, and Hongxia Jin. 2018. Accelerating
+time series searching with large uniform scaling. In Proceedings of the 2018 SIAM
+International Conference on Data Mining. SIAM, 234–242.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_improved">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_improved</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_improved" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_Improved <a href="#id48"><span class="problematic" id="id12">[1]_</span></a> obtains greater pruning power over LB_Keogh
+by performing LB_Keogh twice. LB_Improved computes ordinary LB_Keogh as well as LB_Keogh between query
+series and the projection of candidate series on the query series
+envelopes.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    H(X, Y)_i = \begin{cases}
+    UE(Y)_i \textup{ if } x_i \geq UE(Y)_i \\
+    LE(Y)_i \textup{ if } x_i \leq LE(Y)_i \\
+    x_i \textup{ otherwise }
+\end{cases}
+\end{equation}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{equation}
+    LB\_Improved(X, Y) = LB\_Keogh(X, Y) + LB\_Keogh(Y, H(X, Y))
+\end{equation}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Improved distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_improved</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">lb_improved_dist</span> <span class="o">=</span> <span class="n">lb_improved</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_improved_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">31</span>.480152477394387
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id13"><span class="brackets">1</span></dt>
+<dd><p>Daniel Lemire. 2009. Faster retrieval with a two-pass dynamic-time-warping
+lower bound. Pattern recognition 42, 9 (2009), 2169–2180.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-1">
+<span id="longest-common-subsequence-lcss-and-derivative-lcss-dlcss"></span><h2>Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)<a class="headerlink" href="#module-1" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lcss">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lcss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lcss" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Longest Common Subsequence (LCSS) <a href="#id49"><span class="problematic" id="id14">[1]_</span></a> defines similarity by counting the number of “matches” between two time series, 
+where a match is added when the difference between two elements is less than a constant matching threshold, 
+<span class="math notranslate nohighlight">\(\epsilon\)</span>, which must be tuned to each dataset.</p>
+<p>This approach allows time series to stretch and match without rearranging the sequence of elements. 
+Note that LCSS allows some elements to be unmatched, whereas Dynamic Time Warping (DTW) pairs all elements, even the outliers. 
+This property enables LCSS to focus only on similar subsequences (matched elements) 
+in computing similarity and thus makes LCSS more robust to extremely noisy data with many disimilar outliers.</p>
+<p>LCSS differs from the general formula as if it determines a match, 
+it will compute <span class="math notranslate nohighlight">\(1 + d_{(i-1,j-1)}\)</span> without considering the other directions, 
+and if it determines a miss then it will compute <span class="math notranslate nohighlight">\(1 + min(d_{(i-1,j)},d_{(i,j-1))}\)</span>. 
+The complete formula for LCSS is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u(x,y,\epsilon) &amp; =
+    \begin{cases}
+        1 &amp; \text{if $|x - y| &lt;= \epsilon$} \\
+        0 &amp; \text{else}
+    \end{cases}\\
+    D^h(x,y,\epsilon) = D^v(x,y,\epsilon) &amp; =
+    \begin{cases}
+        \infty &amp; \text{if $|x - y|&lt;= \epsilon$} \\
+        0 &amp; \text{else}
+    \end{cases}\\
+    D^d(x,y,\epsilon) &amp; =
+    \begin{cases}
+        1 &amp; \text{if $|x - y| &lt;= \epsilon$} \\
+        \infty &amp; \text{else}
+    \end{cases}\\
+    \pi(d_{n,m}) &amp; = 1 - \frac{d_{n,m}}{min(n,m)}
+\end{aligned}\end{split}\]</div>
+</div></blockquote>
+<p>The function <span class="math notranslate nohighlight">\(\pi\)</span> is the percent of elements in the smaller time series that are not part of the longest common subsequence. 
+Thus, if the final output is zero, every element in the shorter time series was part of the longest common subsequence. 
+If the value is one, the longest common subsequence was zero and there is no match between two series. 
+Thus, the range of values of the LCSS is <span class="math notranslate nohighlight">\([0,1]\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – the matching threshold</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>LCSS distance</p>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">lcss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">lcss_dist</span> <span class="o">=</span> <span class="n">lcss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">lcss_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span>.33333333333333337
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id15"><span class="brackets">1</span></dt>
+<dd><p>Michail  Vlachos,  George  Kollios,  and  Dimitrios  Gunopulos.  
+“DiscoveringSimilar Multidimensional Trajectories”. 
+In:Proceedings of the 18th Inter-national Conference on Data Engineering. IEEE Computer Society, USA. (2002)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.dlcss">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">dlcss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.dlcss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to Derivative Dynamic Time Warping (DDTW), 
+Derivative Longest Common Subsequence (DLCSS) <a href="#id50"><span class="problematic" id="id16">[1]_</span></a> enables the comparison of “general shape” 
+of two sequences rather than strict value comparisons. 
+Different from DDTW which replaces Euclidean Distance with estimated derivatives, 
+DLCSS considers both values of time series and values of derivatives. 
+The weights of these two components are parameterized. 
+<a href="#id51"><span class="problematic" id="id17">[1]_</span></a> proposed two versions of DLCSS: 2D method that includes values and first derivatives, and 3D method that includes values, first derivatives, and the second derivatives. 
+The 2D method is defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation*}
+    DD_{LCSS}(x,y) = aLCSS(x, y) + bLCSS(\nabla{x},\nabla{y}) \\
+    \nabla{x_i} = x(i+1) - x(i)
+\end{equation*}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\textup{ for } i = 1, 2, ..., n-1\\
+a = 1-\alpha, b = \alpha, \textup{ for } \alpha \in [0,1]\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nabla{x}\)</span> and <span class="math notranslate nohighlight">\(\nabla{y}\)</span> are the first discrete derivatives of <span class="math notranslate nohighlight">\((x,y)\)</span>, and <span class="math notranslate nohighlight">\(a,b\in[0,1]\)</span> are parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – the matching threshold</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series. <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DLCSS distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">ddtw</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+
+<span class="n">ddtw_dist</span> <span class="o">=</span> <span class="n">ddtw</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="s1">&#39;Sakoe-Chiba&#39;</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">fast</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ddtw_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.6571847095819483
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id18"><span class="brackets">1</span></dt>
+<dd><p>Tomasz Górecki. “Using derivatives in a longest common subsequence dis-
+similarity measure for time series classification”. 
+In: Pattern Recognition Letters (2014).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-2">
+<span id="lcss-lower-bounds"></span><h2>LCSS Lower Bounds<a class="headerlink" href="#module-2" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_keogh_lcss">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_keogh_lcss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_keogh_lcss" title="Permalink to this definition">¶</a></dt>
+<dd><p>The LCSS lower bound, LB_Keogh_LCSS <a href="#id52"><span class="problematic" id="id19">[1]_</span></a> is adapted from
+LB_Keogh <a class="footnote-reference brackets" href="#id24" id="id20">2</a> and considers the LCSS matching threshold
+:math:<a href="#id21"><span class="problematic" id="id22">`</span></a>epsilon`in constructing envelopes.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    LB\_LCSS(X, Y) = 1 - \frac{1}{L_Y}\overset{L_Y}{\underset{i=1}{\sum}}\begin{cases}
+    1 \mbox{ if }  LE_i \leq{Y_i} \leq{UE_i} \\
+    0 \mbox{ otherwise }
+    \end{cases}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – the matching threshold</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Keogh_LCSS distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">elastic</span> <span class="kn">import</span> <span class="n">lb_keogh_lcss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_keogh_lcss_dist</span> <span class="o">=</span> <span class="n">lb_keogh_lcss</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_keogh_lcss_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span>.2857142857142857
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id23"><span class="brackets">1</span></dt>
+<dd><p>Chang Wei Tan, François Petitjean, and Geoffrey I Webb. 2020. FastEE: Fast
+Ensembles of Elastic Distances for time series classification. Data Mining and
+Knowledge Discovery 34, 1 (2020), 231–272.</p>
+</dd>
+<dt class="label" id="id24"><span class="brackets"><a class="fn-backref" href="#id20">2</a></span></dt>
+<dd><p>Eamonn Keogh and Chotirat Ann Ratanamahatana. 2005. Exact indexing of
+dynamic time warping. Knowledge and Information Systems 7, 3 (2005), 358–386.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-3">
+<span id="sequence-weighted-alignment-swale"></span><h2>Sequence Weighted Alignment (SWALE)<a class="headerlink" href="#module-3" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.swale">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">swale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.swale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sequence Weighted Alignment (SWALE) <a href="#id53"><span class="problematic" id="id25">[1]_</span></a> is an <span class="math notranslate nohighlight">\(\epsilon\)</span> based distance measure. 
+SWALE introduces a punishment and reward system that is not in Longest Common Subsequence (LCSS). 
+This is encapsulated the parameters p and r. 
+This allows the user to tailor how punishing mismatches are and how rewarding matches are. 
+This makes SWALE more detailing then LCSS as LCSS only records the number of matches 
+and Edit Distance on Real Sequences (EDR) as EDR does not rewards matches. 
+However, 
+this leaves the responsibility to the user to set three parameters to get meaningful results. 
+This can be very hard to do without extensive testing 
+and leaves the results of SWALE heavily variable to the parameters users choose.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u(x,y,\epsilon,p,r) &amp;= 0\\
+    D^v(x,y,\epsilon,p,r) = D^h(x,y,\epsilon,p,r) &amp; = 
+    \begin{cases}
+        \infty &amp; \text{if $|x - y| \leq \epsilon$}\\
+        p &amp; \text{else}\\
+    \end{cases}\\
+    D^d(x,y,\epsilon,p,r)&amp; =
+    \begin{cases}
+        r &amp; \text{if $|x - y| \leq \epsilon$}\\
+        \infty &amp; \text{else}\\
+    \end{cases}\\
+    \pi(d_{n,m}) &amp;= d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – punishment of one mismatch</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – reward of one match</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – the matching threshold</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SWALE distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">swale_distance</span> <span class="o">=</span> <span class="n">swale</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">swale_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">6</span>.0
+</pre></div>
+</div>
+<p><strong>References:</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id26"><span class="brackets">1</span></dt>
+<dd><p>Michael D. Morse and Jignesh M. Patel. “An efficient and accurate methodfor  evaluating  time  series  similarity”.  In:Proceedings of the 2007 ACMSIGMOD international conference on Management of data569–580 (2007).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-4">
+<span id="edit-distance-with-real-penalty-erp"></span><h2>Edit Distance with Real Penalty (ERP)<a class="headerlink" href="#module-4" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.erp">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">erp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.erp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit Distance with Real Penalty (ERP) <a href="#id54"><span class="problematic" id="id27">[1]_</span></a> is another edit distance measure that aims to take the advantages of eing a metric (like most $L_{p}$ norm measures) and allowing temporal shifts. 
+It does this by using Lp-norm distance metrics when comparing two elements or comparing each element to a gap variable, m. 
+Being a metric, ERP makes lower bounding possible through the triangle inequality. 
+This is very useful for pruning through clustering and classfication algorithms.</p>
+<p>ERP provides an advantage over other edit distance measures by providing exact differences between values. 
+Additionally, ERP has no <span class="math notranslate nohighlight">\(\epsilon\)</span> value to tune. 
+Instead, one has to set a gap variable which is often set to 0 to provide intuitive results.</p>
+<p>Lastly, ERP is also very editable; 
+in the formula below, Euclidean distance is used as the internal distance measure but other measures such as absolute difference are also compatible with ERP. 
+This would change <span class="math notranslate nohighlight">\(D\)</span> and <span class="math notranslate nohighlight">\(\pi\)</span> but other metrics might have more desirable properties to certain users.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u &amp; = 0\\
+    D^h(x,y,m) &amp; = (x - m)^2\\
+    D^v(x,y,m) &amp; = (y - m)^2\\
+    D^d(x,y,m) &amp; = (x - y)^2\\
+    \pi(d_{n,m}) &amp; = \sqrt{d_{n,m}}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – the gap variable</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ERP distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">lcss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">erp_dist</span> <span class="o">=</span> <span class="n">erp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">erp_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">34</span>.61213659975356
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id28"><span class="brackets">1</span></dt>
+<dd><p>Lei  Chen  and  Raymond  Ng.  “On  The  Marriage  of  Lp-norms  and  EditDistance”. In:Proceedings of the 30th VLDB Conference,Toronto, Canada. (2004)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-5">
+<span id="erp-lower-bounds"></span><h2>ERP Lower Bounds<a class="headerlink" href="#module-5" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_erp">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_erp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_erp" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_ERP <a href="#id55"><span class="problematic" id="id29">[1]_</span></a> is a ERP lower bound that utilizes the triangular inequality, 
+formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation}
+    LB\_ERP(X, Y) = |\sum{Y} - \sum{X}|
+\end{equation}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_ERP distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">elastic</span> <span class="kn">import</span> <span class="n">lb_erp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_erp_dist</span> <span class="o">=</span> <span class="n">lb_erp</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_erp_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">59</span>
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id30"><span class="brackets">1</span></dt>
+<dd><p>Lei Chen and Raymond Ng. 2004. On The Marriage of Lp-norms and Edit Distance.
+Proceedings of the 30th VLDB Conference,Toronto, Canada (2004).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_kim_erp">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_kim_erp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_kim_erp" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_Kim_ERP <a href="#id56"><span class="problematic" id="id31">[1]_</span></a> is a ERP lower bound adapted from LB_Kim orginally developed for DTW.
+LB_Kim_ERP is formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    LB\_Kim-ERP(X, Y) = max\begin{cases}
+                                    |X'_1 - Y'_1| \\
+                                    |X'_L - Y'_L| \\
+                                    |X'_{max} - Y'_{max}| \\
+                                    |X'_{min} - Y'_{min}|
+                                    \end{cases}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – the gap variable</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Kim_ERP distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_kim_erp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_kim_erp_dist</span> <span class="o">=</span> <span class="n">lb_kim_erp</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_kim_erp_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">26</span>
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id32"><span class="brackets">1</span></dt>
+<dd><p>Chang Wei Tan, François Petitjean, and Geoffrey I Webb. 2020. FastEE: Fast
+Ensembles of Elastic Distances for time series classification. Data Mining and
+Knowledge Discovery 34, 1 (2020), 231–272.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_keogh_erp">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_keogh_erp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_keogh_erp" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_Keogh_ERP <a href="#id57"><span class="problematic" id="id33">[1]_</span></a> is a ERP lower bound adapted from LB_Keogh for DTW.
+LB_Keogh_ERP is formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[UE_i = max(g, max(c_{i-w}:c_{i+w})) \]</div>
+<div class="math notranslate nohighlight">
+\[LE_i = min(g, min(c_{i-w}:c_{i+w}))\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}LB\_Keogh_ERP(X, Y) =  \sqrt{\sum_{i=1}\begin{cases}
+                                            (Y_{i} - UE_{i} )^2 \textup{ if } Y_{i} &gt; UE_{i} \\
+                                            (Y_{i} - LE_{i})^2 \textup{ if } Y_{i} &lt; LE_{i} \\
+                                            0 \textup{ otherwise }
+                                            \end{cases}}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – the gap variable</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_Keogh_ERP distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_keogh_erp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_keogh_erp_dist</span> <span class="o">=</span> <span class="n">lb_keogh_erp</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_keogh_erp_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">14</span>.317821063276353
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id34"><span class="brackets">1</span></dt>
+<dd><p>Chang Wei Tan, François Petitjean, and Geoffrey I Webb. 2020. FastEE: Fast
+Ensembles of Elastic Distances for time series classification. Data Mining and
+Knowledge Discovery 34, 1 (2020), 231–272.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-6">
+<span id="edit-distance-on-real-sequences-edr"></span><h2>Edit Distance on Real Sequences (EDR)<a class="headerlink" href="#module-6" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.edr">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">edr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.edr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit Distance on Real Sequences (EDR) <a href="#id58"><span class="problematic" id="id35">[1]_</span></a> is an edit-based elastic measure. 
+Compared to Longest Common Subsequence (LCSS), EDR does not discriminate which direction to pick based on if the current elements were considered a match. 
+Therefore, it is possible for the current elements to match and for the algorithm to take a horizontal or vertical step which is not possible in LCSS. 
+The intuition behind this method is that EDR aims to capture how many edit operations (delete, insert, substitute) it takes to change one time series into another. 
+To determine if one element is the same as another, a matching threshold <span class="math notranslate nohighlight">\(\epsilon\)</span> is used in a similar way to LCSS, where a match is added when the difference between two comparing elements is less than <span class="math notranslate nohighlight">\(\epsilon\)</span>.
+The threshold’s ability to quantize differences between comparing elements makes EDR useful for very noisy data as outliers in dataset won’t disrupt the overall pattern.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D(x,y,\epsilon) &amp; =
+    \begin{cases}
+        0 &amp; \text{if $|x - y| &lt;= \epsilon$}\\
+        1 &amp; \text{else}
+    \end{cases}\\
+    \pi(d_{n,m}) &amp; = d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – the matching threshold, default to 0</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>EDR distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">edr</span> 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">edr_dist</span> <span class="o">=</span> <span class="n">erp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">edr_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.0
+</pre></div>
+</div>
+<p><strong>Reference</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id36"><span class="brackets">1</span></dt>
+<dd><p>Lei Chen, M. Tamer Ozsu, and Vincent Oria. “Robust and Fast SimilaritySearch  for  Moving  Object  Trajectories”.  In:ACM SIGMOD, Baltimore,Maryland, USA(2005)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-7">
+<span id="time-warp-edit-distance-twed"></span><h2>Time Warp Edit Distance (TWED)<a class="headerlink" href="#module-7" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.twed">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">twed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.twed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time Warp Edit Distance (TWED) <a href="#id59"><span class="problematic" id="id37">[1]_</span></a> is an elastic measure 
+that aims to combine the merits of DTW and edit distance measures like ERP. 
+Unlike ERP, 
+TWED uses time stamps as part of the algorithm which punishes elements that have very different time stamps. 
+TWED controls the extent of this punishment with the parameter <span class="math notranslate nohighlight">\(\nu\)</span>. 
+TWED replaces the insert, delete, and replace with delete-X, delete-Y, and match.
+The delete operation has a cost of <span class="math notranslate nohighlight">\(\lambda\)</span>. 
+TWED is a metric and gains all the benefits of a metric as long as the internal distance function is a metric such as absolute value or Euclidean. 
+However, TWED requires two parameters, <span class="math notranslate nohighlight">\(\nu\)</span> and r:math:<cite>lambda</cite>, to be set properly which depend on the distance measure. 
+Additionally, the use of time stamps might be difficult as not all data sets include time stamps for the data.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,y) \\
+    D^v(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(y,\overline{y}) + \nu * (t_y - \overline{t_y}) + \lambda\\
+    D^h(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,\overline{x}) + \nu * (t_x - \overline{t_x}) + \lambda\\
+    D^d(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,y)+ dist(\overline{x}, \overline{y}) + \nu * (abs(t_y - \overline{t_y}) + abs(t_x - \overline{t_x}))\\
+    \pi(d_{n,m}) &amp; = d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>timesx</strong> (<em>np.array</em>) – time stamp of time series <span class="math notranslate nohighlight">\(X\)</span></p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>timesy</strong> (<em>np.array</em>) – time stamp of time series <span class="math notranslate nohighlight">\(Y\)</span></p></li>
+<li><p><strong>lamb</strong> (<em>float</em>) – cost of delete operation, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p></li>
+<li><p><strong>nu</strong> (<em>float</em>) – cost of difference in timestamps, <span class="math notranslate nohighlight">\(\nu\)</span>.</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TWED distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">timesx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))])</span>
+<span class="n">timesy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">))])</span>
+
+<span class="n">twed_distance</span> <span class="o">=</span> <span class="n">twed</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">timesx</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">timesy</span><span class="p">,</span> <span class="n">lamb</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">nu</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">twed_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">4</span>.5
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id38"><span class="brackets">1</span></dt>
+<dd><p>Pierre-Fran ̧cois  Marteau.  “Time  Warp  Edit  Distance  with  Stiffness  Ad-justment  for  Time  Series  Matching”.  In:IEEE Transactions on PatternAnalysis and Machine Intelligence31.306 - 318 (2009)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-8">
+<span id="twed-lower-bound"></span><h2>TWED Lower Bound<a class="headerlink" href="#module-8" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_twed">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_twed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_twed" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_TWED is an TWED lower bound which constructs upper and lower envelopes, 
+formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    FastEE\_TWED(X, Y) =  min\begin{cases}
+                        (X_1-Y_1)^2 \\
+                        X_1^2 + v + \lambda \\
+                        Y_1^2 + v + \lambda  
+                        \end{cases}  + \overset{L_Y}{\underset{i=2}{\sum}}\begin{cases}
+                        min(v, (Y_i - max(X_{max}, Y_{i-1}))^2 \\ \mbox{ if } Y_i&gt;max(X_{max}, Y_{i-1}) \\
+                        min(v, (Y_i - min(X_{min}, Y_{i-1}))^2 \\ \mbox{ if } Y_i&lt;min(X_{min}, Y_{i-1}) \\
+                        0 \mbox{ otherwise }
+                        \end{cases}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>lamb</strong> (<em>float</em>) – cost of delete operation, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p></li>
+<li><p><strong>nu</strong> (<em>float</em>) – cost of difference in timestamps, <span class="math notranslate nohighlight">\(\nu\)</span>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_TWED distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.elastic</span> <span class="kn">import</span> <span class="n">lb_twed</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">93</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_twed_dist</span> <span class="o">=</span> <span class="n">lb_twed</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">lamb</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_twed_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">10</span>.04
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id39"><span class="brackets">1</span></dt>
+<dd><p>Chang Wei Tan, François Petitjean, and Geoffrey I Webb. 2020. FastEE: Fast
+Ensembles of Elastic Distances for time series classification. Data Mining and
+Knowledge Discovery 34, 1 (2020), 231–272.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-9">
+<span id="move-split-merge-msm"></span><h2>Move-Split-Merge (MSM)<a class="headerlink" href="#module-9" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.msm">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">msm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.msm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move-Split-Merge (MSM) <a href="#id60"><span class="problematic" id="id40">[1]_</span></a> is an edit distance measure that deconstructs the popular editing operations (insert, delete, and substitute);
+instead it proposes sub-operations that have can be used in conjunctions to replicate the original operations. 
+Move functions identical to a substitute, changing the value of an element. 
+Merge combines two equal elements in a series into one. 
+Split takes an element creates a duplicate adjacent to it. 
+Thus, insert can be seen as a split-move operation and delete can be seen as a merge-move operation.</p>
+<p>Similar to ERP, 
+MSM has the advantage of being a metric, 
+which allows MSM to be combined with other generic indexing, 
+clustering, and visualization methods designed to in any metric space. 
+However unlike ERP, MSM is invariant based on the choice of the origin. 
+This means that the distance calculated is unaffected by translations 
+(adding the same constant to both time series).</p>
+<p>Each operation has an associated cost:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    Cost(move) = |x - \overline{x}|
+\end{equation*}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    Cost(split) = Cost(merge) = c
+\end{equation*}\]</div>
+<p>where <span class="math notranslate nohighlight">\(c\)</span> is a set constant, and <span class="math notranslate nohighlight">\(\overline{x}\)</span> is the new value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – the cost for one <em>move</em> or <em>split*</em> operation</p></li>
+<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>MSM distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">msm_distance</span> <span class="o">=</span> <span class="n">msm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msm_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">79</span>.0
+</pre></div>
+</div>
+<p><strong>References:</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id41"><span class="brackets">1</span></dt>
+<dd><p>Alexandra  Stefan,  Vassilis  Athitsos,  and  Gautam  Das.  “The  Move-Split-Merge Metric for Time Series”. In:IEEE Transactions on Knowledge andData Engineering25.1425 – 1438 (2013).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-10">
+<span id="msm-lower-bound"></span><h2>MSM Lower Bound<a class="headerlink" href="#module-10" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.lb_msm">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lb_msm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lb_msm" title="Permalink to this definition">¶</a></dt>
+<dd><p>LB_MSM is an MSM lower bound which constructs upper and lower envelopes, 
+formally defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation}
+    LB\_MSM(X, Y) = |X_1 - Y_1| + \overset{L_Y}{\underset{i=2}{\sum}}\begin{cases}
+                        min(|Y_i - X_{max}|, c) \textup{ if } Y_{i-1}\geq{Y_{i}} &gt; X_{max}   \\
+                min(|Y_i - X_{min}|, c) \textup{ if } Y_{i-1}\leq{Y_{i}} &lt; X_{min} \\
+                0 \textup{ otherwise }
+                    \end{cases}
+\end{equation}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.array</em>) – a time series</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – another time series</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – the cost for one <em>move</em> or <em>split*</em> operation</p></li>
+<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series, defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation, defaulting to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LB_MSM distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">elastic</span> <span class="kn">import</span> <span class="n">lb_msm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">93</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">lb_msm_dist</span> <span class="o">=</span> <span class="n">lb_msm</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lb_msm_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">9</span>.0
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id42"><span class="brackets">1</span></dt>
+<dd><p>Chang Wei Tan, François Petitjean, and Geoffrey I Webb. 2020. FastEE: Fast
+Ensembles of Elastic Distances for time series classification. Data Mining and
+Knowledge Discovery 34, 1 (2020), 231–272.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="LockstepMeasures.html" class="btn btn-neutral float-right" title="Lockstep Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="tsdistance documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

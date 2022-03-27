@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>&lt;no title&gt; &mdash; tsdistance 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tsdistance
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="ElasticMeasures.html">Elastic Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SlidingMeasures.html">Sliding Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="KernelMeasures.html">Kernel Measures</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tsdistance</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+<div class="git-ribbon">
+  <a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
+</div>
+
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/docstrings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>Time series classification tasks usually rely on Nearest Neighbors Search,
+which classifies query series by computing their distances to all series in the training set,
+and label query series with the same class as their nearest “neighbor”.
+This operation is expensive
+because elastic measures used for each comparison is in <span class="math notranslate nohighlight">\(\O_{L^2}\)</span>
+where <span class="math notranslate nohighlight">\(\L\)</span> is the length of one series.
+To speed up Nearest Neighbors Search,
+Lower Bounding Measures first compute a <em>lower bound</em> of the similarity between two series
+with <span class="math notranslate nohighlight">\(\O_{L}\)</span> complexity and go on to compute the actual <span class="math notranslate nohighlight">\(\O_{L^2}\)</span>  similarity only when
+the <em>lower bound</em> is less than the distance.</p>
+<p>The algorithm for computing Lower Bounding Longest Common Subsequence (LCSS) is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lbLCSS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+
+    <span class="n">xmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">epsilon</span><span class="p">);</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">epsilon</span><span class="p">);</span>
+    <span class="n">leny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">leny</span><span class="p">):</span>
+
+        <span class="n">mind</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xmin</span><span class="p">)</span>
+        <span class="n">maxd</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">mind</span> <span class="ow">and</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">maxd</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">match</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+     <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">match</span><span class="o">/</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>Input Arguments: **</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>metric (str): elastic measure to compute similarity, shoud be one of {‘lcss’}</p></li>
+<li><p>constarint (str, optional): the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p>w (float, optional): If <code class="code docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="code docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="code docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”, default to 10000.</p></li>
+<li><p>epsilon (float, required if <code class="code docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;lcss&quot;</span></code>, otherwise not needed): the matching threshold for Longest Common Subsequence (LCSS) measure</p></li>
+</ul>
+</div></blockquote>
+<p>This function fit the 1NN classifier from the training dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>training dataset</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Xlabel</dt>
+<dd class="field-odd"><p>target values (labels)</p>
+</dd>
+<dt class="field-even">type Xlabel</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Fitted 1NN classifier</p>
+</dd>
+</dl>
+<p>Predic class lables for given dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>test samples</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Predicted class labels for each data sample</p>
+</dd>
+</dl>
+<p>Edit Distance with Real Penalty (ERP) <a href="#id13"><span class="problematic" id="id3">[1]_</span></a> is another edit distance measure that aims to take the advantages of both DTW and other edit distance measures.
+It does this by using Lp-norm distance metrics when comparing two elements or comparing each element to a gap variable, m.
+ERP is a metric, meaning that lower bounding is possible through the triangle inequality.
+This is very useful for pruning through clustering and classfication algorithms.</p>
+<p>ERP provides an advantage over other edit distance measures by providing exact differences between values.
+Additionally, ERP has no <span class="math notranslate nohighlight">\(\epsilon\)</span> value to tune.
+Instead, one has to set a gap variable which is often set to 0 to provide intuitive results.</p>
+<p>Lastly, ERP is also very editable;
+in the formula below, Euclidean distance is used as the internal distance measure but other measures such as absolute difference are also compatible with ERP.
+This would change <span class="math notranslate nohighlight">\(D\)</span> and <span class="math notranslate nohighlight">\(\pi\)</span> but other metrics might have more desirable properties to certain users.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation*}
+    D^u &amp; = 0\\
+    D^h(x,y,m) &amp; = (x - m)^2\\
+    D^v(x,y,m) &amp; = (y - m)^2\\
+    D^d(x,y,m) &amp; = (x - y)^2\\
+    \pi(d_{n,m}) &amp; = \sqrt{d_{n,m}}
+\end{equation*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param m</dt>
+<dd class="field-odd"><p>the gap variable</p>
+</dd>
+<dt class="field-even">type m</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param constraint</dt>
+<dd class="field-odd"><p>the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">type constraint</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param w</dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p>
+</dd>
+<dt class="field-even">type w</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param fast</dt>
+<dd class="field-odd"><p>whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-even">type fast</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>ERP distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">lcss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">lcss_dist</span> <span class="o">=</span> <span class="n">lcss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">lcss_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">34</span>.61213659975356
+</pre></div>
+</div>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets">1</span></dt>
+<dd><p>Lei  Chen  and  Raymond  Ng.  “On  The  Marriage  of  Lp-norms  and  EditDistance”. In:Proceedings of the 30th VLDB Conference,Toronto, Canada. (2004)</p>
+</dd>
+</dl>
+<p>Edit Distance on Real Sequences (EDR) <a href="#id14"><span class="problematic" id="id5">[1]_</span></a> is an edit-based elastic measure.
+Compared to Longest Common Subsequence (LCSS), EDR does not discriminate which direction to pick based on if the current elements were considered a match.
+Therefore, it is possible for the current elements to match and for the algorithm to take a horizontal or vertical step which is not possible in LCSS.
+The intuition behind this method is that EDR aims to capture how many edit operations (delete, insert, substitute) it takes to change one time series into another.
+To determine if one element is the same as another, a matching threshold <span class="math notranslate nohighlight">\(\epsilon\)</span> is used in a similar way to LCSS, where a match is added when the difference between two comparing elements is less than <span class="math notranslate nohighlight">\(\epsilon\)</span>.
+The threshold’s ability to quantize differences between comparing elements makes EDR useful for very noisy data as outliers in dataset won’t disrupt the overall pattern.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D(x,y,\epsilon) &amp; =
+    \begin{cases}
+        0 &amp; \text{if $|x - y| &lt;= \epsilon$}\\
+        1 &amp; \text{else}
+    \end{cases}\\
+    \pi(d_{n,m}) &amp; = d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param m</dt>
+<dd class="field-odd"><p>the matching threshold, default to 0</p>
+</dd>
+<dt class="field-even">type m</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param constraint</dt>
+<dd class="field-odd"><p>the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">type constraint</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param w</dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p>
+</dd>
+<dt class="field-even">param fast</dt>
+<dd class="field-even"><p>whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-odd">type fast</dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>EDR distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">edr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">edr_dist</span> <span class="o">=</span> <span class="n">erp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">edr_dist</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.0
+</pre></div>
+</div>
+<p>Time Warp Edit Distance (TWED) <a href="#id15"><span class="problematic" id="id6">[1]_</span></a> is an elastic measure
+that aims to combine the merits of DTW and edit distance measures like ERP.
+Unlike ERP,
+TWED uses time stamps as part of the algorithm which punishes elements that have very different time stamps.
+TWED controls the extent of this punishment with the parameter <span class="math notranslate nohighlight">\(\nu\)</span>.
+TWED replaces the insert, delete, and replace with delete-X, delete-Y, and match.
+The delete operation has a cost of <span class="math notranslate nohighlight">\(\lambda\)</span>.
+TWED is a metric and gains all the benefits of a metric as long as the internal distance function is a metric such as absolute value or Euclidean.
+However, TWED requires two parameters, <span class="math notranslate nohighlight">\(\nu\)</span> and r:math:<cite>lambda</cite>, to be set properly which depend on the distance measure.
+Additionally, the use of time stamps might be difficult as not all data sets include time stamps for the data.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,y) \\
+     D^v(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(y,\overline{y}) + \nu * (t_y - \overline{t_y}) + \lambda\\
+     D^h(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,\overline{x}) + \nu * (t_x - \overline{t_x}) + \lambda\\
+     D^d(x,\overline{x},t_x, \overline{t_x},y,\overline{y},t_y,\overline{t_y},\nu,\lambda) &amp; = dist(x,y)+ dist(\overline{x}, \overline{y}) + \nu * (abs(t_y - \overline{t_y}) + abs(t_x - \overline{t_x}))\\
+     \pi(d_{n,m}) &amp; = d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param timesx</dt>
+<dd class="field-odd"><p>time stamp of time series <span class="math notranslate nohighlight">\(X\)</span></p>
+</dd>
+<dt class="field-even">type timesx</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param timesy</dt>
+<dd class="field-odd"><p>time stamp of time series <span class="math notranslate nohighlight">\(Y\)</span></p>
+</dd>
+<dt class="field-even">type timesy</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param lamb</dt>
+<dd class="field-odd"><p>cost of delete operation, <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+</dd>
+<dt class="field-even">type lamb</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param constraint</dt>
+<dd class="field-odd"><p>the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">type constraint</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param w</dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p>
+</dd>
+<dt class="field-even">type w</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param fast</dt>
+<dd class="field-odd"><p>whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-even">type fast</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>TWED distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">timesx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))])</span>
+<span class="n">timesy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">))])</span>
+
+<span class="n">twed_distance</span> <span class="o">=</span> <span class="n">twed</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">timesx</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">timesy</span><span class="p">,</span> <span class="n">lamb</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">nu</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">twed_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<p><strong>References</strong></p>
+<p>..[1] Pierre-Fran ̧cois  Marteau.  “Time  Warp  Edit  Distance  with  Stiffness  Ad-justment  for  Time  Series  Matching”.  In:IEEE Transactions on PatternAnalysis and Machine Intelligence31.306 - 318 (2009)</p>
+<p>Move-Split-Merge (MSM) <a href="#id16"><span class="problematic" id="id7">[1]_</span></a> is an edit distance measure that deconstructs the popular editing operations (insert, delete, and substitute);
+nstead it proposes sub-operations that have can be used in conjunctions to replicate the original operations.
+Move functions identical to a substitute, changing the value of an element.
+Merge combines two equal elements in a series into one.
+Split takes an element creates a duplicate adjacent to it.
+Thus, insert can be seen as a split-move operation and delete can be seen as a merge-move operation.</p>
+<p>Similar to ERP,
+MSM has the advantage of being a metric,
+which allows MSM to be combined with other generic indexing,
+clustering, and visualization methods designed to in any metric space.
+However unlike ERP, MSM is invariant based on the choice of the origin.
+This means that the distance calculated is unaffected by translations
+(adding the same constant to both time series).</p>
+<p>Each operation has an associated cost:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    Cost(move) = |x - \overline{x}|
+\end{equation*}
+where $\overline{x}$ is the new value and
+\begin{equation*}
+    Cost(split) = Cost(merge) = c
+\end{equation*}
+where ${c}$ is a set constant.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param c</dt>
+<dd class="field-odd"><p>the cost for one <em>move</em> or <em>split*</em> operation</p>
+</dd>
+<dt class="field-even">type c</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param constraint</dt>
+<dd class="field-odd"><p>the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">type constraint</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param w</dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p>
+</dd>
+<dt class="field-even">type w</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param fast</dt>
+<dd class="field-odd"><p>whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-even">type fast</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>MSM distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">msm_distance</span> <span class="o">=</span> <span class="n">msm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msm_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">79</span>.0
+</pre></div>
+</div>
+<p><strong>References:</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id8"><span class="brackets">1</span></dt>
+<dd><p>Alexandra  Stefan,  Vassilis  Athitsos,  and  Gautam  Das.  “The  Move-Split-Merge Metric for Time Series”. In:IEEE Transactions on Knowledge andData Engineering25.1425 – 1438 (2013).</p>
+</dd>
+</dl>
+<p>Sequence Weighted Alignment (SWALE) <a href="#id17"><span class="problematic" id="id9">[1]_</span></a> is an $epsilon$ based distance measure.
+SWALE introduces a punishment and reward system that is not in Longest Common Subsequence (LCSS).
+This is encapsulated the parameters p and r.
+This allows the user to tailor how punishing mismatches are and how rewarding matches are.
+This makes SWALE more detailing then LCSS as LCSS only records the number of matches
+and Edit Distance on Real Sequences (EDR) as EDR does not rewards matches.
+However,
+this leaves the responsibility to the user to set three parameters to get meaningful results.
+This can be very hard to do without extensive testing
+and leaves the results of SWALE heavily variable to the parameters users choose.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D^u(x,y,\epsilon,p,r) &amp;= 0\\
+    D^v(x,y,\epsilon,p,r) = D^h(x,y,\epsilon,p,r) &amp; =
+    \begin{cases}
+        \infty &amp; \text{if $|x - y| \leq \epsilon$}\\
+        p &amp; \text{else}\\
+    \end{cases}\\
+    D^d(x,y,\epsilon,p,r)&amp; =
+    \begin{cases}
+         r &amp; \text{if $|x - y| \leq \epsilon$}\\
+         \infty &amp; \text{else}\\
+    \end{cases}\\
+    \pi(d_{n,m}) &amp;= d_{n,m}
+\end{aligned}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param p</dt>
+<dd class="field-odd"><p>punishment of one mismatch</p>
+</dd>
+<dt class="field-even">type p</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param r</dt>
+<dd class="field-odd"><p>reward of one match</p>
+</dd>
+<dt class="field-even">type r</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param epsilon</dt>
+<dd class="field-odd"><p>the matching threshold</p>
+</dd>
+<dt class="field-even">type epsilon</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param constraint</dt>
+<dd class="field-odd"><p>the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">type constraint</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param w</dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p>
+</dd>
+<dt class="field-even">type w</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
+<dt class="field-odd">param fast</dt>
+<dd class="field-odd"><p>whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-even">type fast</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>SWALE distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">swale_distance</span> <span class="o">=</span> <span class="n">swale</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">swale_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">6</span>.0
+</pre></div>
+</div>
+<p><strong>References:</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id10"><span class="brackets">1</span></dt>
+<dd><p>Michael D. Morse and Jignesh M. Patel. “An efficient and accurate methodfor  evaluating  time  series  similarity”.  In:Proceedings of the 2007 ACMSIGMOD international conference on Management of data569–580 (2007).</p>
+</dd>
+</dl>
+<p>Weighted dynamic time warping (WDTW) <a href="#id18"><span class="problematic" id="id11">[1]_</span></a> is a variation of DTW
+that aims to give more importance to the shape similarity of two time series.
+It does this through a weighted vector that penalizes the differences between i and j.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    D(x_i,y_j,w_{abs(i-j)) = w_{abs(i-j) * |x_i - y_j|\\
+    \pi(d_{i,j}) = d_{i,j}
+\end{aligned}\end{split}\]</div>
+<p>Note: w is a element of a weight vector whose elements are calculated as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    w_i(g,|X|) = \frac{1}{1 + e^{-g * (i - \frac{|X|}{2})}}
+\end{equation*}\]</div>
+<p>where $|X|$ is the length of the time series X.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>a time series</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param Y</dt>
+<dd class="field-odd"><p>another time series</p>
+</dd>
+<dt class="field-even">type Y</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+<dt class="field-odd">param g</dt>
+<dd class="field-odd"><p>a constant that determines the weight vector. (see the formula above)</p>
+</dd>
+<dt class="field-even">type g</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>WDTW Distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="n">wdtw_distance</span> <span class="o">=</span> <span class="n">wdtw</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">wdtw_distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">1</span>.0459354060018373
+</pre></div>
+</div>
+<p><strong>References:</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id12"><span class="brackets">1</span></dt>
+<dd><p>Young-Seon Jeong, Myong K. Jeong, and Olufemi A. Omitaomu. “Weighteddynamic time warping for time series classification”. In:Pattern Recognition4.2231 – 2240 (2011)</p>
+</dd>
+</dl>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

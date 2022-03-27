@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Kernel Measures &#8212; tsdistance 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="kernel-measures">
+<h1>Kernel Measures<a class="headerlink" href="#kernel-measures" title="Permalink to this headline">¶</a></h1>
+<section id="module-KernelMeasures">
+<span id="kernel-dynamic-time-warping"></span><h2>Kernel Dynamic Time Warping<a class="headerlink" href="#module-KernelMeasures" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="KernelMeasures.kdtw">
+<span class="sig-prename descclassname"><span class="pre">KernelMeasures.</span></span><span class="sig-name descname"><span class="pre">kdtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#KernelMeasures.kdtw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Dynamic Time Warping (KDTW) <a href="#id5"><span class="problematic" id="id1">[1]_</span></a> is a similarity measure constructed from DTW 
+with the property that KDTW is a positive definite kernel 
+(homogeneous to an inner product in the so-called Reproducing Kernel Hilbert Space). 
+Following earlier work by Cuturi &amp; al. <a href="#id6"><span class="problematic" id="id2">[2]_</span></a>, 
+namely the so-called Global Alignment kernel (GA-kernel), 
+the derivation of KDTW is detailed in Marteau &amp; Gibet 2014  <a href="#id7"><span class="problematic" id="id3">[1]_</span></a>. 
+KDTW is a convolution kernel as defined in <a href="#id8"><span class="problematic" id="id4">[3]_</span></a>. The formula for KDTW is shown below:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation*}
+    k(X_i,Y_i,\sigma) = e^{- (X_i-Y_i)^2/\sigma }
+\end{equation*}
+\begin{equation*}
+    KDTW^{xy}(X_i,Y_j,\sigma) = \beta * k(X_i,Y_j,\sigma) \cdot \sum
+    \begin{cases}
+        h(i-1,j)KDTW^{xy}(X_{i-1},Y_j) \\ h(i-1,j-1)KDTW^{xy}(X_{i-1},Y_{j-1}) \\ h(i,j-1)KDTW^{xy}(X_i,Y_{j-1}) \\
+    \end{cases}
+\end{equation*}
+\begin{equation*}
+    KDTW^{xx}(X_i,Y_j,\sigma) = \beta \cdot \sum 
+    \begin{cases}
+    (h(i-1,j) KDTW^{xx}(X_{i-1},Y_j) * k(X_{i},Y_i,\sigma) \\ \Delta_{i,j} *h(i,j)*KDTW^{xx}(X_{i-1},Y_{j-1})*k(x_i,y_j,\sigma) \\ h(p,q-1)*KDTW^{xx}(X_i,Y_{j-1})*k(X_j,Y_j,\sigma) \\
+    \end{cases}
+\end{equation*}
+\begin{equation*}
+    KDTW(X,Y) = KDTW^{xy}(X_n,Y_m) + KDTW^{xx}(X_n,Y_m) 
+\end{equation*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>xlen</strong> (<em>int</em>) – length of time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>ylen</strong> (<em>int</em>) – length of time series <code class="code docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – bandwidth parameter which weights the local contributions</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Reference</strong>
+.. [1] ierre-François Marteau and Sylvie Gibet. “On Recursive Edit DistanceKernels with Application to Time Series Classification”. In:IEEE Trans-actions on Neural Networks and Learning Systems1-14 (2014)
+.. [2] M. Cuturi et al. “A Kernel for Time Series Based on Global Alignments”.In:IEEE International Conference on Acoustics, Speech and Signal Pro-cessing2.413-416 (2007)
+.. [3] David Haussler. “Convolution Kernels on Discrete Structures”. In:Techni-cal Report UCS-CRL-99-10, University of California at Santa Cruz, SantaCruz, CA, USA.(1999)</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">tsdistance</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ElasticMeasures.html">Elastic Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LowerBounds.html">Lower Bounding Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SlidingMeasures.html">Sliding Measures</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, John Paparrizos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/KernerlMeasures.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

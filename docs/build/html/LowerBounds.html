@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Lower Bounding Measures &mdash; tsdistance 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tsdistance
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="ElasticMeasures.html">Elastic Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SlidingMeasures.html">Sliding Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="KernelMeasures.html">Kernel Measures</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tsdistance</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+<div class="git-ribbon">
+  <a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
+</div>
+
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Lower Bounding Measures</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/LowerBounds.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lower-bounding-measures">
+<span id="lowerbounds"></span><h1>Lower Bounding Measures<a class="headerlink" href="#lower-bounding-measures" title="Permalink to this headline">¶</a></h1>
+<p>Time series classification tasks usually rely on Nearest Neighbors Search,
+which classifies query series by computing their distances to all series in the training set
+and label query series using the class label of their nearest training sample.
+This process is sometimes time-consuming
+because elastic measures used for each comparison is in <span class="math notranslate nohighlight">\(O(L^2)\)</span>
+where <span class="math notranslate nohighlight">\(L\)</span> is the length of a single time series.
+To speed up Nearest Neighbors Search,
+Lower Bounding Measures first compute a <em>lower bound</em> of the similarity between two series
+with <span class="math notranslate nohighlight">\(O(L)\)</span> complexity and go on to compute the actual <span class="math notranslate nohighlight">\(O(L^2)\)</span>  similarity only when
+the <em>lower bound</em> is less than the distance between the query series and its “nearest neighbor” in the training set.</p>
+<div class="section" id="one-nearest-neighbor-classifier-with-lower-bounds">
+<h2>One Nearest Neighbor Classifier with Lower Bounds<a class="headerlink" href="#one-nearest-neighbor-classifier-with-lower-bounds" title="Permalink to this headline">¶</a></h2>
+<p><strong>Example</strong></p>
+<p>Input</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># &quot;Coffee&quot; is one of the UCR Archive datasets.</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">Bounded1NN</span><span class="p">(</span><span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;lcss&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Coffee_train_X</span><span class="p">,</span> <span class="n">Coffee_train_y</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predicted_label</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">Coffee_test_X</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;predicted_label: &#39;</span><span class="p">,</span> <span class="n">predicted_label</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lb_predict:  <span class="o">[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">1</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>
+</pre></div>
+</div>
+<p><code class="code docutils literal notranslate"><span class="pre">sklearn.neighbors.KNeighborsClassifier</span></code> in the <code class="code docutils literal notranslate"><span class="pre">Scikit-Learn</span></code> library is a popular tool for Nearest Neighbor Search, <code class="code docutils literal notranslate"><span class="pre">Bounded1NN</span></code> gives the same accuracy and is about 5 times faster when using <code class="code docutils literal notranslate"><span class="pre">lcss</span></code> for classification tasks.</p>
+</div>
+<div class="section" id="lower-bounding-longest-common-subsequence-lcss">
+<h2>Lower Bounding Longest Common Subsequence (LCSS)<a class="headerlink" href="#lower-bounding-longest-common-subsequence-lcss" title="Permalink to this headline">¶</a></h2>
+<p>The algorithm for computing Lower Bounding Longest Common Subsequence (LCSS) is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lbLCSS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+
+    <span class="n">xmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">epsilon</span><span class="p">);</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">epsilon</span><span class="p">);</span>
+    <span class="n">leny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">leny</span><span class="p">):</span>
+
+        <span class="n">mind</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xmin</span><span class="p">)</span>
+        <span class="n">maxd</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">mind</span> <span class="ow">and</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">maxd</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">match</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">match</span><span class="o">/</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="lower-bounding-edit-distance-with-real-penalty-erp">
+<h2>Lower Bounding Edit Distance with Real Penalty (ERP)<a class="headerlink" href="#lower-bounding-edit-distance-with-real-penalty-erp" title="Permalink to this headline">¶</a></h2>
+<p>The algorithm for computing the Lower Bounding Edit Distance with Real Penalty (ERP) is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ERPLowerBound</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
