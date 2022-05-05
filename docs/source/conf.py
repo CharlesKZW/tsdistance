@@ -13,7 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('/Users/apple/Desktop/tsdistance/tsdistance'))
-autodoc_mock_imports = ["tsdistance"]
+autodoc_mock_imports = ["tsdistance", "numpy"]
 
 
 # -- Project information -----------------------------------------------------
