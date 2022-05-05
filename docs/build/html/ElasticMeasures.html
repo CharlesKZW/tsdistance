@@ -246,7 +246,7 @@ but this can be reduced to a linear size complexity as only the immediately prev
 <span id="dynamic-time-warping-dtw-and-dtw-variants"></span><h2>Dynamic Time Warping (DTW) and DTW variants<a class="headerlink" href="#module-elastic" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="elastic.dtw">
-<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">dtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.dtw" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">dtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.dtw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamic Time Warping (DTW) <a href="#id43"><span class="problematic" id="id2">[1]_</span></a> utilizes dynamic programming to find 
 the optimal alignment between elements of times series <span class="math notranslate nohighlight">\(X = (x_{1}, x_{2}, ..., x_{n})\)</span> 
 and <span class="math notranslate nohighlight">\(Y = (y_{1}, y_{2}, ..., y_m)\)</span> by constructing 
@@ -266,7 +266,6 @@ a distance matrix <span class="math notranslate nohighlight">\(M\)</span> of sha
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
 <li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
-<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series. <code class="docutils literal notranslate"><span class="pre">w</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case the warping window is the length of the longest time series.</p></li>
 <li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 </ul>
@@ -576,7 +575,7 @@ lower bound. Pattern recognition 42, 9 (2009), 2169–2180.</p>
 <span id="longest-common-subsequence-lcss-and-derivative-lcss-dlcss"></span><h2>Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)<a class="headerlink" href="#module-1" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="elastic.lcss">
-<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lcss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lcss" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">lcss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.lcss" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Longest Common Subsequence (LCSS) <a href="#id49"><span class="problematic" id="id14">[1]_</span></a> defines similarity by counting the number of “matches” between two time series, 
 where a match is added when the difference between two elements is less than a constant matching threshold, 
@@ -619,14 +618,16 @@ Thus, the range of values of the LCSS is <span class="math notranslate nohighlig
 <li><p><strong>X</strong> (<em>np.array</em>) – a time series</p></li>
 <li><p><strong>Y</strong> (<em>np.array</em>) – another time series</p></li>
 <li><p><strong>epsilon</strong> (<em>float</em>) – the matching threshold</p></li>
-<li><p><strong>constraint</strong> (<em>float</em><em>, </em><em>optional</em>) – the constraint to use, should be one of {<code class="docutils literal notranslate"><span class="pre">&quot;Sakoe-Chiba&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Itakura&quot;</span></code>}  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>w</strong> (<em>float</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Sakoe-Chiba&quot;</span></code> , <code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100.</p></li>
-<li><p><strong>fast</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>LCSS distance</p>
-<p><strong>Example:</strong></p>
+</dl>
+<p>:param w:<code class="docutils literal notranslate"><span class="pre">w</span></code> is the largest temporal shift allowed between two time series; if  <code class="docutils literal notranslate"><span class="pre">constraint</span> <span class="pre">=</span> <span class="pre">&quot;Itakura&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code> is the slope of the “Itakura Parallelogram”. Default to 100. 
+:type w: float, optional
+:param fast: whether or not to use fast (Numba) implementation,  default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+:type fast: bool, optional
+:return: LCSS distance</p>
+<blockquote>
+<div><p><strong>Example:</strong></p>
 <p>Input:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.ElasticMeasures</span> <span class="kn">import</span> <span class="n">lcss</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -642,9 +643,7 @@ Thus, the range of values of the LCSS is <span class="math notranslate nohighlig
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span>.33333333333333337
 </pre></div>
 </div>
-</p>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>References</strong></p>
 <dl class="footnote brackets">
 <dt class="label" id="id15"><span class="brackets">1</span></dt>

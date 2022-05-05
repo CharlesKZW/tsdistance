@@ -7,6 +7,27 @@ This restricts the time series to those of the same length.
 Despite this restriction, lock-step measures are very versatile due to the sheer variety of them. 
 Here we will provide a equation and short description of each one in our library.
 
+The usage of Lockstep measures is consistent across all measures. 
+Below is an example of using ``manhattan`` distance:
+
+.. code-block:: python
+
+    from tsdistance.lockstep import manhattan
+    import numpy as np
+
+    ts1 = np.array([1, 2, 3, 4, 5, 9, 7])
+    ts2 = np.array([8, 9, 9, 7, 3, 1, 2])
+
+    dist_manhattan = manhattan(ts1, ts2)
+    print(dist_manhattan)
+
+Output:
+
+.. code-block:: bash
+
+    38
+
+
 Minkowski Functions
 ====================
 

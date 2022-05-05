@@ -29,7 +29,7 @@ def make_envelopes(X, w): # used to compute lower and upper envelopes
     return upper_envelopes, lower_envelopes
 
 # Start of DTW
-def dtw(x, y, w = None, constraint=None, fast = True):
+def dtw(x, y, w = None, fast = True):
 
     r"""Dynamic Time Warping (DTW) [1]_ utilizes dynamic programming to find 
     the optimal alignment between elements of times series :math:`X = (x_{1}, x_{2}, ..., x_{n})` 
@@ -53,8 +53,6 @@ def dtw(x, y, w = None, constraint=None, fast = True):
     :type X: np.array
     :param Y: another time series
     :type Y: np.array
-    :param constraint: the constraint to use, should be one of {``"Sakoe-Chiba"``, ``"Itakura"``}  or ``None``, default to ``None``.
-    :type constraint: float, optional
     :param w: If ``constraint = "Sakoe-Chiba"`` , ``w`` is the largest temporal shift allowed between two time series. ``w`` defaults to ``None``, in which case the warping window is the length of the longest time series.
     :type w: float, optional
     :param fast: whether or not to use fast (Numba) implementation,  default to ``True``
@@ -90,30 +88,10 @@ def dtw(x, y, w = None, constraint=None, fast = True):
            Signal Processing, vol. 26(1), pp. 43--49, 1978.
     """
 
-    if constraint == "None":
-        if fast == True:
-            return dtw_n_numba(x, y)
-        if fast == False:
-            return dtw_n(x, y)
-    elif constraint == "Sakoe-Chiba":
-        if fast == True:
-            return dtw_scb_numba(x, y, w)
-        if fast == False:
-            return dtw_scb(x, y, w)
-    
-def dtw_n(x, y):
-    N = len(x)
-    M = len(y)
-    D = np.full((N+1, M+1), np.inf)
-    D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(1, M):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
-
-    Dist = math.sqrt(D[N, M])
-
-    return Dist
+    if fast == True:
+        return dtw_scb_numba(x, y, w)
+    if fast == False:
+        return dtw_scb(x, y, w)
 
 def dtw_scb(x, y, w):
     N = len(x)
@@ -124,21 +102,6 @@ def dtw_scb(x, y, w):
     D[0, 0] = 0
     for i in range(1, N+1):
         for j in range(max(1, i-w), min(i+w, M)+1):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
-
-    Dist = math.sqrt(D[N, M])
-
-    return Dist
-
-@jit(nopython=True)
-def dtw_n_numba(x, y):
-    N = len(x)
-    M = len(y)
-    D = np.full((N+1, M+1), np.inf)
-    D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(1, M):
             cost = (x[i-1] - y[j-1])**2
             D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
 
@@ -692,7 +655,7 @@ def lb_improved_n(x,y,w = None):
 
 # End of DTW
 
-def lcss(x,y,epsilon,w = 100, constraint=None, fast=True):
+def lcss(x,y,epsilon,w = None, fast=True):
 
     r"""
     Longest Common Subsequence (LCSS) [1]_ defines similarity by counting the number of "matches" between two time series, 
@@ -742,9 +705,7 @@ def lcss(x,y,epsilon,w = 100, constraint=None, fast=True):
    :type Y: np.array
    :param epsilon: the matching threshold
    :type epsilon: float
-   :param constraint: the constraint to use, should be one of {``"Sakoe-Chiba"``, ``"Itakura"``}  or ``None``, default to ``None``.
-   :type constraint: float, optional
-   :param w: If ``constraint = "Sakoe-Chiba"`` , ``w`` is the largest temporal shift allowed between two time series; if  ``constraint = "Itakura"``, ``w`` is the slope of the "Itakura Parallelogram". Default to 100. 
+   :param w:``w`` is the largest temporal shift allowed between two time series; if  ``constraint = "Itakura"``, ``w`` is the slope of the "Itakura Parallelogram". Default to 100. 
    :type w: float, optional
    :param fast: whether or not to use fast (Numba) implementation,  default to ``True``.
    :type fast: bool, optional
@@ -779,16 +740,10 @@ def lcss(x,y,epsilon,w = 100, constraint=None, fast=True):
           In:Proceedings of the 18th Inter-national Conference on Data Engineering. IEEE Computer Society, USA. (2002)
     """
 
-    if constraint == "None":
-        if fast == True:
-            return lcss_n_numba(x, y, epsilon)
-        if fast == False:
-            return lcss_n(x, y, epsilon);
-    elif constraint == "Sakoe-Chiba":
-        if fast == True:
-            return lcss_scb_numba(x, y, epsilon,w)
-        if fast == False:
-            return lcss_scb(x, y, epsilon, w)
+    if fast == True:
+        return lcss_scb_numba(x, y, epsilon,w)
+    if fast == False:
+        return lcss_scb(x, y, epsilon, w)
 
 def lcss_n(x, y, epsilon):
     lenx = len(x)
@@ -828,6 +783,8 @@ def lcss_n(x, y, epsilon):
 def lcss_scb(x, y, epsilon, w):
     lenx = len(x)
     leny = len(y)
+    if w == None:
+        w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = max(0, i-w)
@@ -864,6 +821,8 @@ def lcss_scb(x, y, epsilon, w):
 def lcss_n_numba(x, y, epsilon):
     lenx = len(x)
     leny = len(y)
+    if w == None:
+        w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = 0
@@ -900,6 +859,8 @@ def lcss_n_numba(x, y, epsilon):
 def lcss_scb_numba(x, y, epsilon, w):
     lenx = len(x)
     leny = len(y)
+    if w == None:
+        w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = max(0, i-w)

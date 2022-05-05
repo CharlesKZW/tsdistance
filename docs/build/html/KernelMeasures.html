@@ -176,8 +176,8 @@
 <span id="kernel-dynamic-time-warping-kdtw"></span><h2>Kernel Dynamic Time Warping (kdtw)<a class="headerlink" href="#module-kernel" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="kernel.kdtw">
-<span class="sig-prename descclassname"><span class="pre">kernel.</span></span><span class="sig-name descname"><span class="pre">kdtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kernel.kdtw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kernel Dynamic Time Warping (KDTW) <a href="#id13"><span class="problematic" id="id1">[1]_</span></a> is a similarity measure constructed from DTW 
+<span class="sig-prename descclassname"><span class="pre">kernel.</span></span><span class="sig-name descname"><span class="pre">kdtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kernel.kdtw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Dynamic Time Warping (KDTW) <a href="#id13"><span class="problematic" id="id1">[1]_</span></a>. is a similarity measure constructed from DTW 
 with the property that KDTW is a positive definite kernel 
 (homogeneous to an inner product in the so-called Reproducing Kernel Hilbert Space). 
 Following earlier work by Cuturi &amp; al. <a href="#id14"><span class="problematic" id="id2">[2]_</span></a>, 
@@ -220,6 +220,16 @@ KDTW is a convolution kernel as defined in <a class="footnote-reference brackets
 <dd class="field-even"><p>the KDTW distance</p>
 </dd>
 </dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tsdistance.kernel</span> <span class="kn">import</span> <span class="n">kdtw</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kdtw_dist</span> <span class="o">=</span> <span class="n">kdtw</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span> <span class="n">ts2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kdtw_dist</span><span class="p">)</span>
+<span class="go">4.796391482673881e-51</span>
+</pre></div>
+</div>
 <p><strong>Reference</strong></p>
 <dl class="footnote brackets">
 <dt class="label" id="id5"><span class="brackets">1</span></dt>

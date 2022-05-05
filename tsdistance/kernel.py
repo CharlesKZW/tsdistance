@@ -7,10 +7,10 @@ def kdtw_distance(x, y, sigma):
     minprob = 10 ** (-20)
     return factor * (math.exp(-sigma * ((x-y)**2))+minprob)
 
-def kdtw(x, xlen, y, ylen, sigma):
+def kdtw(x, y, sigma):
 
     r"""
-    Kernel Dynamic Time Warping (KDTW) [1]_ is a similarity measure constructed from DTW 
+    Kernel Dynamic Time Warping (KDTW) [1]_. is a similarity measure constructed from DTW 
     with the property that KDTW is a positive definite kernel 
     (homogeneous to an inner product in the so-called Reproducing Kernel Hilbert Space). 
     Following earlier work by Cuturi & al. [2]_, 
@@ -60,6 +60,19 @@ def kdtw(x, xlen, y, ylen, sigma):
     :type sigma: float
     :return: the KDTW distance
 
+    **Example:**
+
+    .. code-block:: python
+
+        >>> from tsdistance.kernel import kdtw
+        >>> import numpy as np
+        >>> ts1 = np.array([1, 2, 3, 4, 5, 9, 7])
+        >>> ts2 = np.array([8, 9, 9, 7, 3, 1, 2])
+        >>> kdtw_dist = kdtw(ts1, ts2, 0.5)
+        >>> print(kdtw_dist)
+        4.796391482673881e-51
+
+
     **Reference**
 
     .. [1] Pierre-François Marteau and Sylvie Gibet. “On Recursive Edit DistanceKernels with Application to Time Series Classification”. In:IEEE Trans-actions on Neural Networks and Learning Systems1-14 (2014)
@@ -70,49 +83,33 @@ def kdtw(x, xlen, y, ylen, sigma):
     
     """
 
-    xp = np.array([])
-    yp = np.array([])
-
-    xp[0]=0
-    yp[0]=0
-
+    xlen = len(x)
+    ylen = len(y)
+    xp = np.zeros(xlen+1)
+    yp = np.zeros(ylen+1)
     for i in range(1, xlen+1):
         xp[i] = x[i-1]
     for i in range(1, ylen+1):
         yp[i] = y[i-1]
-
     xlen = xlen + 1
     ylen = ylen + 1
-
     x = xp
     y = yp
-
-    dp = np.array([])
-    dp1 = np.array([])
-    dp2 = np.array([])
-
+    length = max(xlen, ylen)
+    dp = np.zeros((length, length))
+    dp1 = np.zeros((length, length))
+    dp2 = np.zeros(length)
     dp2[0] = 1
-
     for i in range(1, min(xlen, ylen)):
         dp2[i] = kdtw_distance(x[i], y[i], sigma)
-    
-    for i in range(0, xlen):
-        dp[i] = np.array([])
-        dp1[i] = np.array([])
-
-    len = min(xlen, ylen)
-
     dp[0][0] = 1
     dp1[0][0] = 1
-
     for i in range(1, xlen):
         dp[i][0] = dp[i - 1][0] * kdtw_distance(x[i], y[1], sigma)
         dp1[i][0] = dp1[i - 1][0] * dp2[i]
-
     for i in range(1, ylen):
         dp[0][i] = dp[0][i - 1] * kdtw_distance(x[1], y[i], sigma)
         dp1[0][i] = dp1[0][i - 1] * dp2[i]
-    
     for i in range(1, xlen):
         for j in range(1, ylen):
              lcost = kdtw_distance(x[i], y[j], sigma)
@@ -121,7 +118,7 @@ def kdtw(x, xlen, y, ylen, sigma):
                  dp1[i][j] = dp1[i - 1][j - 1] * lcost + dp1[i - 1][j] * dp2[i] + dp1[i][j - 1] * dp2[j]
              else:
                 dp1[i][j] = dp1[i - 1][j] * dp2[i] + dp1[i][j - 1] * dp2[j]
-    
+
     for i in range(0, xlen):
         for j in range(0, ylen):
             dp[i][j] += dp1[i][j]

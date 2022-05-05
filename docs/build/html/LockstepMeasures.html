@@ -183,6 +183,22 @@
 This restricts the time series to those of the same length.
 Despite this restriction, lock-step measures are very versatile due to the sheer variety of them.
 Here we will provide a equation and short description of each one in our library.</p>
+<p>The usage of Lockstep measures is consistent across all measures.
+Below is an example of using <code class="docutils literal notranslate"><span class="pre">manhattan</span></code> distance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsdistance.lockstep</span> <span class="kn">import</span> <span class="n">manhattan</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">ts1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="n">ts2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="n">dist_manhattan</span> <span class="o">=</span> <span class="n">manhattan</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span> <span class="n">ts2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dist_manhattan</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">38</span>
+</pre></div>
+</div>
 <div class="section" id="minkowski-functions">
 <h2>Minkowski Functions<a class="headerlink" href="#minkowski-functions" title="Permalink to this headline">¶</a></h2>
 <p>The Minkowski functions include Euclidean distance, Manhattan Distance and Chebyshev’s distance.
