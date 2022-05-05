@@ -37,6 +37,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,9 +94,9 @@
 <li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SlidingMeasures.html">Sliding Measures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Kernel Measures</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#kernel-dynamic-time-warping-kdtw">Kernel Dynamic Time Warping (kdtw)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#shift-invariant-kernel-sink">Shift INvariant Kernel (SINK)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#log-global-alignment-kernel-lgak">Log Global Alignment Kernel (LGAK)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kernel">Kernel Dynamic Time Warping (kdtw)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-0">Shift INvariant Kernel (SINK)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-1">Log Global Alignment Kernel (LGAK)</a></li>
 </ul>
 </li>
 </ul>
@@ -171,14 +172,146 @@
             
   <div class="section" id="kernel-measures">
 <h1>Kernel Measures<a class="headerlink" href="#kernel-measures" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="kernel-dynamic-time-warping-kdtw">
-<h2>Kernel Dynamic Time Warping (kdtw)<a class="headerlink" href="#kernel-dynamic-time-warping-kdtw" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kernel">
+<span id="kernel-dynamic-time-warping-kdtw"></span><h2>Kernel Dynamic Time Warping (kdtw)<a class="headerlink" href="#module-kernel" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="kernel.kdtw">
+<span class="sig-prename descclassname"><span class="pre">kernel.</span></span><span class="sig-name descname"><span class="pre">kdtw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kernel.kdtw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Dynamic Time Warping (KDTW) <a href="#id13"><span class="problematic" id="id1">[1]_</span></a>. is a similarity measure constructed from DTW 
+with the property that KDTW is a positive definite kernel 
+(homogeneous to an inner product in the so-called Reproducing Kernel Hilbert Space). 
+Following earlier work by Cuturi &amp; al. <a href="#id14"><span class="problematic" id="id2">[2]_</span></a>, 
+namely the so-called Global Alignment kernel (GA-kernel), 
+the derivation of KDTW is detailed in Marteau &amp; Gibet 2014  <a href="#id15"><span class="problematic" id="id3">[1]_</span></a>. 
+KDTW is a convolution kernel as defined in <a class="footnote-reference brackets" href="#id7" id="id4">3</a>. The formula for KDTW is shown below:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    k(X_i,Y_i,\sigma) = e^{- (X_i-Y_i)^2/\sigma }
+\end{equation*}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation*}
+    KDTW^{xy}(X_i,Y_j,\sigma) = \beta * k(X_i,Y_j,\sigma) \cdot \sum
+    \begin{cases}
+        h(i-1,j)KDTW^{xy}(X_{i-1},Y_j) \\ h(i-1,j-1)KDTW^{xy}(X_{i-1},Y_{j-1}) \\ h(i,j-1)KDTW^{xy}(X_i,Y_{j-1}) \\
+    \end{cases}
+\end{equation*}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{equation*}
+    KDTW^{xx}(X_i,Y_j,\sigma) = \beta \cdot \sum 
+    \begin{cases}
+    (h(i-1,j) KDTW^{xx}(X_{i-1},Y_j) * k(X_{i},Y_i,\sigma) \\ \Delta_{i,j} *h(i,j)*KDTW^{xx}(X_{i-1},Y_{j-1})*k(x_i,y_j,\sigma) \\ h(p,q-1)*KDTW^{xx}(X_i,Y_{j-1})*k(X_j,Y_j,\sigma) \\
+    \end{cases}
+\end{equation*}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{equation*}
+    KDTW(X,Y) = KDTW^{xy}(X_n,Y_m) + KDTW^{xx}(X_n,Y_m) 
+\end{equation*}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>xlen</strong> (<em>int</em>) – length of time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>ylen</strong> (<em>int</em>) – length of time series <code class="code docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – bandwidth parameter which weights the local contributions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the KDTW distance</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tsdistance.kernel</span> <span class="kn">import</span> <span class="n">kdtw</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kdtw_dist</span> <span class="o">=</span> <span class="n">kdtw</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span> <span class="n">ts2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kdtw_dist</span><span class="p">)</span>
+<span class="go">4.796391482673881e-51</span>
+</pre></div>
 </div>
-<div class="section" id="shift-invariant-kernel-sink">
-<h2>Shift INvariant Kernel (SINK)<a class="headerlink" href="#shift-invariant-kernel-sink" title="Permalink to this headline">¶</a></h2>
+<p><strong>Reference</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id5"><span class="brackets">1</span></dt>
+<dd><p>Pierre-François Marteau and Sylvie Gibet. “On Recursive Edit DistanceKernels with Application to Time Series Classification”. In:IEEE Trans-actions on Neural Networks and Learning Systems1-14 (2014)</p>
+</dd>
+<dt class="label" id="id6"><span class="brackets">2</span></dt>
+<dd><ol class="upperalpha simple" start="13">
+<li><p>Cuturi et al. “A Kernel for Time Series Based on Global Alignments”.In:IEEE International Conference on Acoustics, Speech and Signal Pro-cessing2.413-416 (2007)</p></li>
+</ol>
+</dd>
+<dt class="label" id="id7"><span class="brackets"><a class="fn-backref" href="#id4">3</a></span></dt>
+<dd><p>David Haussler. “Convolution Kernels on Discrete Structures”. In:Techni-cal Report UCS-CRL-99-10, University of California at Santa Cruz, SantaCruz, CA, USA.(1999)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="log-global-alignment-kernel-lgak">
-<h2>Log Global Alignment Kernel (LGAK)<a class="headerlink" href="#log-global-alignment-kernel-lgak" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-0">
+<span id="shift-invariant-kernel-sink"></span><h2>Shift INvariant Kernel (SINK)<a class="headerlink" href="#module-0" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="kernel.SINK">
+<span class="sig-prename descclassname"><span class="pre">kernel.</span></span><span class="sig-name descname"><span class="pre">SINK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kernel.SINK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift Invariant Kernel (SINK) <a href="#id16"><span class="problematic" id="id8">[1]_</span></a> <a href="#id17"><span class="problematic" id="id9">[2]_</span></a>
+computes the distance between time series X and Y by summing all weighted elements of the Coefficient Normalized Cross-Correlation 
+(<span class="math notranslate nohighlight">\(NCC_c\)</span>) sequence between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. 
+Formally, SINK is defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{equation}
+    SINK(x,y,\gamma) = \sum_{i=1}^ne^{\gamma * NCCc_i(x,y)}
+\end{equation} \]</div>
+<p>where <span class="math notranslate nohighlight">\(\gamma &gt; 0\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>gamma</strong> – bandwidth paramater that determines weights for each inner product through <span class="math notranslate nohighlight">\(k'(\vec{x}, \vec{y}, \gamma) = e^{\gamma&lt;\vec{x}, \vec{y}&gt;}\)</span></p></li>
+<li><p><strong>e</strong> – constant, default to <span class="math notranslate nohighlight">\(e\)</span></p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>float, <span class="math notranslate nohighlight">\(\gamma\)</span> &gt; 0</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the SINK distance</p>
+</dd>
+</dl>
+<p><strong>References</strong></p>
+<dl class="footnote brackets">
+<dt class="label" id="id10"><span class="brackets">1</span></dt>
+<dd><p>John Paparrizos and Michael Franklin. “GRAIL: Efficient Time-SeriesRepresentation Learning”. In:Proceedings of the VLDB Endowment12(2019)</p>
+</dd>
+<dt class="label" id="id11"><span class="brackets">2</span></dt>
+<dd><p>Amaia Abanda, Usue Mor, and Jose A. Lozano. “A review on distancebased time series classification”. In:Data Mining and Knowledge Discovery12.378–412 (2019)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-1">
+<span id="log-global-alignment-kernel-lgak"></span><h2>Log Global Alignment Kernel (LGAK)<a class="headerlink" href="#module-1" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="kernel.LGAK">
+<span class="sig-prename descclassname"><span class="pre">kernel.</span></span><span class="sig-name descname"><span class="pre">LGAK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kernel.LGAK" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function uses the log Global Alignment Kernel (TGAK) described in Cuturi (2011) <a href="#id18"><span class="problematic" id="id12">[1]_</span></a>.
+The formula for LGAK is follows:</p>
+<div class="math notranslate nohighlight">
+\[LGAK(x, y,\sigma)= (\prod_{i=1}^{|\pi|}e^(\frac{1}{2\sigma^2}({x_{\pi_1(i)} - y_{\pi_2(j)}})^2+log(e^{-\frac{({x_{\pi_1(i)} - y_{\pi_2(j)}})^2}{2\sigma^2}})))\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – time series <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – parameter of the Gaussian kernel</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the LGAK distance</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
