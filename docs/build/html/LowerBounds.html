@@ -169,55 +169,8 @@
 which classifies query series by computing their distances to all series in the training set
 and label query series using the class label of their nearest training sample.
 Here we provide a</p>
-<div class="section" id="module-OneNN">
-<span id="id1"></span><h2>One Nearest Neighbor Classifier<a class="headerlink" href="#module-OneNN" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="OneNN.OneNN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">OneNN.</span></span><span class="sig-name descname"><span class="pre">OneNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for implementing One Nearest Neighbors Search with Lower Bounding Measures</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>metric</strong> (<em>function</em>) – distance measure to compute similarity</p></li>
-<li><p><strong>metric_param</strong> – parameters of distance measure (if applicable) ,default = <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>lb_metric</strong> (<em>function</em>) – lower bounding distance measure to compute similarity (only applicable if <code class="docutils literal notranslate"><span class="pre">metric</span></code> is one of the Elastic Measures)</p></li>
-<li><p><strong>lb_param</strong> (<em>tuple</em>) – parameters of distance measure (if applicable) ,default = <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="OneNN.OneNN.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xlabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function fits the 1NN classifier from the training dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>np.array</em>) – training dataset</p></li>
-<li><p><strong>Xlabel</strong> (<em>np.array</em>) – target values (labels)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Fitted 1NN classifier</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OneNN.OneNN.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN.predict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predic class lables for given dataset</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>np.array</em>) – test samples</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Predicted class label for each data sample</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="id1">
+<h2>One Nearest Neighbor Classifier<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p><strong>Example</strong></p>
 <p>Input</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># &quot;Coffee&quot; is one of the UCR Archive datasets.</span>
