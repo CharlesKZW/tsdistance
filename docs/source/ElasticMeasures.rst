@@ -80,18 +80,17 @@ but this can be reduced to a linear size complexity as only the immediately prev
 Dynamic Time Warping (DTW) and DTW variants
 ====================================================
 
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: dtw
     
     .. autofunction:: ddtw
-    
-    .. autofunction:: wdtw
+
 
 DTW Lower Bounds
 =================
 
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lb_kim
     
@@ -104,7 +103,7 @@ DTW Lower Bounds
 Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
 ==============================================================
     
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lcss
 
@@ -112,27 +111,26 @@ Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
 
 LCSS Lower Bounds
 ===================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lb_keogh_lcss
     
 Sequence Weighted Alignment (SWALE)
 ====================================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: swale
-
 
 Edit Distance with Real Penalty (ERP)
 =====================================
 
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: erp
     
 ERP Lower Bounds
 ===================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lb_erp
 
@@ -143,32 +141,32 @@ ERP Lower Bounds
 Edit Distance on Real Sequences (EDR)
 =====================================
 
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: edr
 
 Time Warp Edit Distance (TWED)
 ===============================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: twed
 
 TWED Lower Bound
 ===================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lb_twed
 
 
 Move-Split-Merge (MSM)
 ===========================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: msm
 
 MSM Lower Bound
 ===================
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: lb_msm
 
