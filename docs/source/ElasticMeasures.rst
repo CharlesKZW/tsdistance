@@ -80,7 +80,7 @@ but this can be reduced to a linear size complexity as only the immediately prev
 Dynamic Time Warping (DTW) and DTW variants
 ====================================================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: dtw
     
@@ -90,7 +90,7 @@ Dynamic Time Warping (DTW) and DTW variants
 DTW Lower Bounds
 =================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_kim
     
