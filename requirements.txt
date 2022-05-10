@@ -1,4 +1,6 @@
 numpy>=1.12.0
 renku-sphinx-theme 
+numba
+math
 
 
