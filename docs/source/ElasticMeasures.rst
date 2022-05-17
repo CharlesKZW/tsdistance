@@ -80,7 +80,7 @@ but this can be reduced to a linear size complexity as only the immediately prev
 Dynamic Time Warping (DTW) and DTW variants
 ====================================================
 
-.. automodule:: tsdistance.elastic
+.. automodule:: elastic
 
     .. autofunction:: dtw
     

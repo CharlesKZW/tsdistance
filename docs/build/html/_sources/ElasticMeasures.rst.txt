@@ -85,13 +85,12 @@ Dynamic Time Warping (DTW) and DTW variants
     .. autofunction:: dtw
     
     .. autofunction:: ddtw
-    
-    .. autofunction:: wdtw
+
 
 DTW Lower Bounds
 =================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_kim
     
@@ -121,7 +120,6 @@ Sequence Weighted Alignment (SWALE)
 .. automodule:: elastic
 
     .. autofunction:: swale
-
 
 Edit Distance with Real Penalty (ERP)
 =====================================
