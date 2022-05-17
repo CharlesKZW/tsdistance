@@ -13,7 +13,7 @@
 import os
 import sys
 #sys.path.insert(0, os.path.abspath('/Users/apple/Desktop/tsdistance/tsdistance'))
-sys.path.insert(0, os.path.abspath('/Users/apple/Desktop/tsdistance/tsd_methods'))
+sys.path.insert(0, os.path.abspath('../tsdistance/tsd_methods'))
 
 
 # -- Project information -----------------------------------------------------
