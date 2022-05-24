@@ -90,6 +90,6 @@ Log Global Alignment Kernel (LGAK)
 
 ## Documentation
 
-The documentation is hosted at [address]. It includes an API and a user guide.
+The documentation is hosted at [[tsdistance]](https://flourishing-ganache-f26bde.netlify.app/index.html). It includes an API and a user guide.
 
 
