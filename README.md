@@ -13,11 +13,6 @@
 <hr>
 
 
-## Installation
-There are different alternatives to install tslearn:
-* PyPi: `python -m pip install tsdistance`
-* Conda: `conda install -c conda-forge tsdistance`
-
 
 This library depends on `Numpy`. In order for the installation to be successful, `Numpy` must be installed. 
 
