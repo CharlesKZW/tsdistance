@@ -5,7 +5,7 @@
 
 <!-- Short description -->
 <p align="center">
-  tsdistance is an comprehensive  open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
+  tsdistance is a comprehensive  open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
 </p>
 
 ## Notice on Installation
