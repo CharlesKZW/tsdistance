@@ -5,7 +5,7 @@
 
 <!-- Short description -->
 <p align="center">
-  tsdistance is an open-source Python toolkit with comprehensive implementations of time series distance measures. 
+  tsdistance is an comprehensive  open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
 </p>
 
 ## Notice
