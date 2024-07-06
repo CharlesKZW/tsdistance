@@ -5,16 +5,11 @@
 
 <!-- Short description -->
 <p align="center">
-   tsdistance is a Python toolkit that provides multiple approaches to measure distances betwen time series. 
+  tsdistance is an open-source Python toolkit with comprehensive implementations of time series distance measures. 
 </p>
 
-
-<!-- Draw horizontal rule -->
-<hr>
-
-
-
-This library depends on `Numpy`. In order for the installation to be successful, `Numpy` must be installed. 
+## Notice
+This is alpha software under development and currently the best way to use is to download the repo and import distance functions needed. Feedbacks are welcome!
 
 ## Getting started
 
