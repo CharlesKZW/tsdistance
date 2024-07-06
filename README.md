@@ -8,8 +8,8 @@
   tsdistance is an comprehensive  open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
 </p>
 
-## Notice
-This is alpha software under development and currently the best way to use is to download the repo and import distance functions needed. Feedbacks are welcome!
+## Notice on Installation
+This is alpha software under development and currently the best way to use is to download the repo and import distance functions needed. We will upload it to platforms like PyPI soon.
 
 ## Getting started
 
