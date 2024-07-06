@@ -9,7 +9,7 @@
 </p>
 
 ## Notice on Installation
-This is alpha software under development and currently the best way to use is to download the repo and import distance functions needed. We will upload it to platforms like PyPI soon.
+This is **alpha software under development** and currently the best way to use is to download the repo and import distance functions needed. We will upload it to platforms like PyPI soon.
 
 ## Getting started
 
