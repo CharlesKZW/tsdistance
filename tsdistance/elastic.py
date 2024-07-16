@@ -1,32 +1,10 @@
 import numpy as np
 from numba import jit
 import math
+from math import sqrt
+from tsdistance.mathSupport import MakeEnvForSingleTS, make_envelopes, dev
 
 
-# a helper function for ddtw, dlcss, lb_ddtw
-def dev(X):
-    lenx = X.shape[1]
-    dX = (2 * X[:, 1:lenx-1] + X[:, 2:lenx] - 3*X[:, 0:lenx-2])/4
-    first_col = np.array([dX[:, 0]])
-    last_col = np.array([dX[:, dX.shape[1]-1]])
-    dX = np.concatenate((first_col.T, dX), axis = 1)
-    dX = np.concatenate((dX, last_col.T), axis =1)
-    return dX
-
-@jit(nopython = True)
-def make_envelopes(X, w): # used to compute lower and upper envelopes
-    num_columns = len(X)
-    upper_envelopes = np.zeros(num_columns)
-    lower_envelopes = np.zeros(num_columns)
-    
-    for j in range(num_columns):
-        wmin = max(0, j-w)
-        wmax = min(num_columns-1, j+w)
-
-        upper_envelopes[j] = max(X[wmin: wmax+1])
-        lower_envelopes[j] = min(X[wmin: wmax+1])
-            
-    return upper_envelopes, lower_envelopes
 
 # Start of DTW
 def dtw(x, y, w = None, fast = True):
@@ -397,14 +375,6 @@ def lb_keogh_n(y, x, w):
             lb_dist += (y[i] - LE) ** 2
     return math.sqrt(lb_dist)
 
-def dev(X): # helper function of lb_ddtw
-    lenx = X.shape[1]
-    dX = (2 * X[:, 1:lenx-1] + X[:, 2:lenx] - 3*X[:, 0:lenx-2])/4
-    first_col = np.array([dX[:, 0]])
-    last_col = np.array([dX[:, dX.shape[1]-1]])
-    dX = np.concatenate((first_col.T, dX), axis = 1)
-    dX = np.concatenate((dX, last_col.T), axis =1)
-    return dX
 
 
 def lb_new(y, x, w = None, fast = True):
@@ -652,8 +622,89 @@ def lb_improved_n(x,y,w = None):
 
     return math.sqrt(lb_keogh_square_n(x,u,l) + lb_keogh_square_n(y,upper_h,lower_h))
 
+@jit(nopython = True)
+def glb_dtw(y, x, w):
 
-# End of DTW
+    r"""
+    The Generalized Lower Bound (GLB) variant for DTW [1] that achieves high pruning power while caches reusable computations.
+    GLB_DTW is a state-of-the-art DTW lower bound for DTW. The function can be imported using ``from tsdistance.elastic import glb_dtw``.
+
+    
+    .. math::
+
+        \begin{equation}
+        GLB\_DTW = \sqrt{(x_i - y_i)^2 + (x_{L_{\textbf{x}}} - y_{L_{\textbf{y}}})^2 + max\begin{cases}
+            \delta_{DTW}(\textbf{y}, \textbf{x}, w) \\
+            \delta_{DTW}(\textbf{x}, \textbf{y}, w) \\
+        \end{cases}} 
+        \end{equation}
+
+    where the delta functions are defined as:
+
+    .. math:: 
+
+       
+        \delta_{DTW}(\textbf{x}, \textbf{y}, w)= \sum_{j=2}^{L_{\textbf{y}} -1}\begin{cases}
+            (y_j - UE(\textbf{x})_j)^2 \textup{ for } y_j \geq{UE(\textbf{x})_j} \\
+            (y_j- LE(\textbf{x})_j)^2 \textup{ for } y_j \leq{LE(\textbf{x})_j} \\
+            0 \textup{ otherwise }
+            \end{cases}$
+         
+
+       
+        $\delta_{DTW}(\textbf{y}, \textbf{x}, w) = \sum_{i=2}^{L_{\textbf{x}} -1}\begin{cases}
+            (x_i - UE(\textbf{y})_i)^2 \textup{ for } x_i \geq{UE(\textbf{y})_i} \\
+            (x_i - LE(\textbf{y})_i)^2 \textup{ for } x_i \leq{LE(\textbf{y})_i} \\
+            0 \textup{ otherwise }
+            \end{cases}
+        
+    
+    :param y: a time series
+    :type y: np.array
+    :param x: another time series
+    :type x: np.array
+    :param w: ``w`` is the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_DTW distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] Paparrizos, K. Wu, A. Elmore, C. Faloutsos, and M. J. Franklin. 2023. Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8): 2019–2032.
+    """
+
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    leny = len(y)
+    lenx = len(x)
+    fixed_dist = (x[0]-y[0]) **2 + (x[lenx-1] - y[leny-1])**2
+
+    y_dist = 0
+
+    for i in range(1, leny-1):
+
+        if y[i] > XUE[i]:
+            y_dist += (y[i] - XUE[i]) **2
+        if y[i] < XLE[i]:
+            y_dist += (y[i] - XLE[i]) **2
+
+    x_dist = 0
+    
+    for i in range(1, lenx-1):
+
+        if x[i] > YUE[i]:
+            x_dist += (x[i] - YUE[i]) **2
+        if x[i] < YLE[i]:
+            x_dist += (x[i] - YLE[i]) **2
+
+    lb_dist = fixed_dist + max(x_dist, y_dist)
+
+
+    return sqrt(lb_dist)
+
+
 
 def lcss(x,y,epsilon,w = None, fast=True):
 
@@ -2227,7 +2278,7 @@ def msm_scb_numba(x,y,c,w):
     if w == None:
         w = max(xlen, ylen)
     cost = np.full((xlen, ylen), np.inf)
-    cost[0][0] = abs(x[0] - y[0]);
+    cost[0][0] = abs(x[0] - y[0])
 
     for i in range(1,len(x)):
         cost[i][0] = cost[i-1][0] + msm_dist(x[i],x[i-1],y[0],c)
@@ -2563,4 +2614,3 @@ def swale_scb(x,y,p,r,epsilon,w):
                    cur[j] = min(prev[j], cur[j-1]) + p
     return cur[leny-1]
 
-# End of Swale
