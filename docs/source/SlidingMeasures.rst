@@ -12,7 +12,7 @@ of length :math:`(2m-1)` that contains the inner product of two time series in e
 Normalized Cross-Correlation
 ====================================
 
-.. automodule:: tsd_methods.sliding
+.. automodule:: tsdistance.sliding
 
     .. autofunction:: NCC
 
@@ -20,7 +20,7 @@ Normalized Cross-Correlation
 Biased Normalized Cross-Correlation
 ====================================
 
-.. automodule:: tsd_methods.sliding
+.. automodule:: tsdistance.sliding
 
     .. autofunction:: NCCb
 
@@ -28,7 +28,7 @@ Biased Normalized Cross-Correlation
 Unbiased Normalized Cross-Correlation
 ======================================
 
-.. automodule:: tsd_methods.sliding
+.. automodule:: tsdistance.sliding
 
     .. autofunction:: NCCu
 
@@ -36,7 +36,7 @@ Unbiased Normalized Cross-Correlation
 Coefficient Normalized Cross-Correlation
 =========================================
 
-.. automodule:: tsd_methods.sliding
+.. automodule:: tsdistance.sliding
 
     .. autofunction:: NCCc
 

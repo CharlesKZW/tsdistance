@@ -80,7 +80,7 @@ but this can be reduced to a linear size complexity as only the immediately prev
 Dynamic Time Warping (DTW) and DTW variants
 ====================================================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: dtw
     
@@ -103,7 +103,7 @@ DTW Lower Bounds
 Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
 ==============================================================
     
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lcss
 
@@ -111,26 +111,26 @@ Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
 
 LCSS Lower Bounds
 ===================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_keogh_lcss
     
 Sequence Weighted Alignment (SWALE)
 ====================================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: swale
 
 Edit Distance with Real Penalty (ERP)
 =====================================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: erp
     
 ERP Lower Bounds
 ===================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_erp
 
@@ -141,32 +141,32 @@ ERP Lower Bounds
 Edit Distance on Real Sequences (EDR)
 =====================================
 
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: edr
 
 Time Warp Edit Distance (TWED)
 ===============================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: twed
 
 TWED Lower Bound
 ===================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_twed
 
 
 Move-Split-Merge (MSM)
 ===========================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: msm
 
 MSM Lower Bound
 ===================
-.. automodule:: elastic
+.. automodule:: tsdistance.elastic
 
     .. autofunction:: lb_msm
 

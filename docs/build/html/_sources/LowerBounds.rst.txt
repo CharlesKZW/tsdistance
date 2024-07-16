@@ -12,7 +12,7 @@ Here we provide a
 One Nearest Neighbor Classifier
 =================================
 
-.. automodule:: OneNN
+.. automodule:: tsdistance.OneNN
 
     .. autoclass:: OneNN
        :members: fit, predict

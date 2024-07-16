@@ -1,92 +1,46 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>One Nearest-Neighbor Classifier &mdash; tsdistance 0.0.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> tsdistance
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            tsdistance
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="ElasticMeasures.html">Elastic Measures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
@@ -94,86 +48,41 @@
 <li class="toctree-l1"><a class="reference internal" href="KernelMeasures.html">Kernel Measures</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">tsdistance</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-<div class="git-ribbon">
-  <a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
-</div>
-
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>One Nearest-Neighbor Classifier</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">One Nearest-Neighbor Classifier</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/LowerBounds.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="one-nearest-neighbor-classifier">
-<span id="lowerbounds"></span><h1>One Nearest-Neighbor Classifier<a class="headerlink" href="#one-nearest-neighbor-classifier" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="one-nearest-neighbor-classifier">
+<span id="lowerbounds"></span><h1>One Nearest-Neighbor Classifier<a class="headerlink" href="#one-nearest-neighbor-classifier" title="Permalink to this headline"></a></h1>
 <p>Time series classification tasks usually rely on Nearest Neighbors Search,
 which classifies query series by computing their distances to all series in the training set
 and label query series using the class label of their nearest training sample.
 Here we provide a</p>
-<div class="section" id="module-OneNN">
-<span id="id1"></span><h2>One Nearest Neighbor Classifier<a class="headerlink" href="#module-OneNN" title="Permalink to this headline">¶</a></h2>
+<section id="module-tsdistance.OneNN">
+<span id="id1"></span><h2>One Nearest Neighbor Classifier<a class="headerlink" href="#module-tsdistance.OneNN" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="OneNN.OneNN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">OneNN.</span></span><span class="sig-name descname"><span class="pre">OneNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.OneNN.OneNN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tsdistance.OneNN.</span></span><span class="sig-name descname"><span class="pre">OneNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.OneNN.OneNN" title="Permalink to this definition"></a></dt>
 <dd><p>Class for implementing One Nearest Neighbors Search with Lower Bounding Measures</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -186,8 +95,8 @@ Here we provide a</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="OneNN.OneNN.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xlabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN.fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.OneNN.OneNN.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xlabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.OneNN.OneNN.fit" title="Permalink to this definition"></a></dt>
 <dd><p>This function fits the 1NN classifier from the training dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -203,8 +112,8 @@ Here we provide a</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="OneNN.OneNN.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneNN.OneNN.predict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.OneNN.OneNN.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.OneNN.OneNN.predict" title="Permalink to this definition"></a></dt>
 <dd><p>Predic class lables for given dataset</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -233,51 +142,35 @@ Here we provide a</p>
 </pre></div>
 </div>
 <p><code class="code docutils literal notranslate"><span class="pre">sklearn.neighbors.KNeighborsClassifier</span></code> in the <code class="code docutils literal notranslate"><span class="pre">Scikit-Learn</span></code> library is a popular tool for Nearest Neighbor Search, <code class="code docutils literal notranslate"><span class="pre">Bounded1NN</span></code> gives the same accuracy and is about 5 times faster when using <code class="code docutils literal notranslate"><span class="pre">lcss</span></code> for classification tasks.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2022, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.
-
-    </p>
+    <p>&#169; Copyright 2024, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -40,7 +40,7 @@ They are all variations of:
         (\sum_{i=1}^n |X_i - Y_i|^p)^{\frac{1}{p}}
     \end{equation*}
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: minkowski
 
@@ -55,7 +55,7 @@ L1 Functions
 =============
 The :math:`L_1` functions all involve using the Manhattan metric in some fashion, see formula for each approach below for details. 
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: sorensen
 
@@ -77,7 +77,7 @@ The intersection family of functions have a strong relationship with the :math:`
 Many of the intersection functions can be converted to :math:`L_1` by replacing :math:`\min(X_i,Y_i)` with :math:`\frac{|X_i, Y_i|}{2}`. 
 One commonality between the intersection family of functions is the use of the element-wise minimum of the two time series. 
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: wave_hedges
 
@@ -91,7 +91,7 @@ Inner Product Functions
 ========================
 The inner product functions all use the sum of pairwise multiplication of the elements from both time series.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: innerproduct
 
@@ -109,7 +109,7 @@ Squared Chord Functions
 =======================
 The Squared Chord functions are a set of geometric mean distances. Thus, these distance functions are not compatible with negative values in either time series.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: fidelity
 
@@ -125,7 +125,7 @@ Squared L2 Functions
 =====================
 The squared :math:`L_2` distance functions are a group of distance measures that all have :math:`(X_i - Y_i)^2` as the base.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: squared_euclidean
 
@@ -147,7 +147,7 @@ Shannon's Enthropy Functions
 =============================
 The following functions are based on Shannon's Entropy metric which has to deal with how much information a variable contains and the probabilistic uncertainty of information.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: kullback
 
@@ -165,7 +165,7 @@ Vicissitude Functions
 =====================
 This group of functions is based on Vicis-Wave Hedges function.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: vicis_wave_hedges
 
@@ -183,7 +183,7 @@ Combination Functions
 ======================
 The combination functions take approaches from multiple types of functions displayed already.
 
-.. automodule:: lockstep
+.. automodule:: tsdistance.lockstep
 
     .. autofunction:: taneja
     

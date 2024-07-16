@@ -6,20 +6,20 @@ Kernel Measures
 Kernel Dynamic Time Warping (kdtw)
 ====================================
 
-.. automodule:: kernel
+.. automodule:: tsdistance.kernel
 
     .. autofunction:: kdtw
 
 Shift INvariant Kernel (SINK)
 ==============================
 
-.. automodule:: kernel
+.. automodule:: tsdistance.kernel
 
     .. autofunction:: SINK
 
 Log Global Alignment Kernel (LGAK)
 ==================================
 
-.. automodule:: kernel
+.. automodule:: tsdistance.kernel
 
     .. autofunction:: LGAK

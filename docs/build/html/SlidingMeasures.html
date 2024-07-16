@@ -1,100 +1,54 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Sliding Measures &mdash; tsdistance 0.0.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/fonts.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Kernel Measures" href="KernelMeasures.html" />
     <link rel="prev" title="Lockstep Measures" href="LockstepMeasures.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> tsdistance
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            tsdistance
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="ElasticMeasures.html">Elastic Measures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LockstepMeasures.html">Lockstep Measures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Sliding Measures</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-sliding">Normalized Cross-Correlation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tsdistance.sliding">Normalized Cross-Correlation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-0">Biased Normalized Cross-Correlation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-1">Unbiased Normalized Cross-Correlation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-2">Coefficient Normalized Cross-Correlation</a></li>
@@ -103,87 +57,42 @@
 <li class="toctree-l1"><a class="reference internal" href="KernelMeasures.html">Kernel Measures</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">tsdistance</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-<div class="git-ribbon">
-  <a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
-</div>
-
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Sliding Measures</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sliding Measures</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/SlidingMeasures.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="sliding-measures">
-<h1>Sliding Measures<a class="headerlink" href="#sliding-measures" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="sliding-measures">
+<h1>Sliding Measures<a class="headerlink" href="#sliding-measures" title="Permalink to this headline"></a></h1>
 <p>Sliding measures <a href="#id2"><span class="problematic" id="id1">[1]_</span></a> define the distance between time series <span class="math notranslate nohighlight">\(X\)</span> and time series <span class="math notranslate nohighlight">\(Y\)</span>
 by finding the largest correlation between <span class="math notranslate nohighlight">\(X\)</span> and all shifted versions of <span class="math notranslate nohighlight">\(Y\)</span> ,
 where each shifted version is created by moving all entries in <span class="math notranslate nohighlight">\(Y\)</span>  towards right by <span class="math notranslate nohighlight">\(s\)</span> positions.
 In this process, we create a cross-correlation sequence, <span class="math notranslate nohighlight">\(CC_{w}(\vec{x}, \vec{y})\)</span> with <span class="math notranslate nohighlight">\(w\in{1, 2, ..., 2m-1}\)</span>
 of length <span class="math notranslate nohighlight">\((2m-1)\)</span> that contains the inner product of two time series in every possible shift.</p>
-<div class="section" id="module-sliding">
-<span id="normalized-cross-correlation"></span><h2>Normalized Cross-Correlation<a class="headerlink" href="#module-sliding" title="Permalink to this headline">¶</a></h2>
+<section id="module-tsdistance.sliding">
+<span id="normalized-cross-correlation"></span><h2>Normalized Cross-Correlation<a class="headerlink" href="#module-tsdistance.sliding" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="sliding.NCC">
-<span class="sig-prename descclassname"><span class="pre">sliding.</span></span><span class="sig-name descname"><span class="pre">NCC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sliding.NCC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.sliding.NCC">
+<span class="sig-prename descclassname"><span class="pre">tsdistance.sliding.</span></span><span class="sig-name descname"><span class="pre">NCC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.sliding.NCC" title="Permalink to this definition"></a></dt>
 <dd><p>The formula for Normalized Cross-Correlation (<span class="math notranslate nohighlight">\(NCC\)</span>) is: <span class="math notranslate nohighlight">\(max(CC_{w}(\vec{x}, \vec{y}))\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -198,12 +107,12 @@ of length <span class="math notranslate nohighlight">\((2m-1)\)</span> that cont
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-0">
-<span id="biased-normalized-cross-correlation"></span><h2>Biased Normalized Cross-Correlation<a class="headerlink" href="#module-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-0">
+<span id="biased-normalized-cross-correlation"></span><h2>Biased Normalized Cross-Correlation<a class="headerlink" href="#module-0" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="sliding.NCCb">
-<span class="sig-prename descclassname"><span class="pre">sliding.</span></span><span class="sig-name descname"><span class="pre">NCCb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sliding.NCCb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.sliding.NCCb">
+<span class="sig-prename descclassname"><span class="pre">tsdistance.sliding.</span></span><span class="sig-name descname"><span class="pre">NCCb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.sliding.NCCb" title="Permalink to this definition"></a></dt>
 <dd><p>The formula for Biased Normalized Cross-Correlation (<span class="math notranslate nohighlight">\(NCC_b\)</span>) is: <span class="math notranslate nohighlight">\(max(\frac{CC_{w}(\vec{x}, \vec{y})}{m})\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -218,12 +127,12 @@ of length <span class="math notranslate nohighlight">\((2m-1)\)</span> that cont
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-1">
-<span id="unbiased-normalized-cross-correlation"></span><h2>Unbiased Normalized Cross-Correlation<a class="headerlink" href="#module-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-1">
+<span id="unbiased-normalized-cross-correlation"></span><h2>Unbiased Normalized Cross-Correlation<a class="headerlink" href="#module-1" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="sliding.NCCu">
-<span class="sig-prename descclassname"><span class="pre">sliding.</span></span><span class="sig-name descname"><span class="pre">NCCu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sliding.NCCu" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.sliding.NCCu">
+<span class="sig-prename descclassname"><span class="pre">tsdistance.sliding.</span></span><span class="sig-name descname"><span class="pre">NCCu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.sliding.NCCu" title="Permalink to this definition"></a></dt>
 <dd><p>The formula for Unbiased Normalized Cross-Correlation (<span class="math notranslate nohighlight">\(NCC_u\)</span>) is: <span class="math notranslate nohighlight">\(max(\frac{CC_{w}(\vec{x}, \vec{y})}{m-|w-m|})\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -238,12 +147,12 @@ of length <span class="math notranslate nohighlight">\((2m-1)\)</span> that cont
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-2">
-<span id="coefficient-normalized-cross-correlation"></span><h2>Coefficient Normalized Cross-Correlation<a class="headerlink" href="#module-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-2">
+<span id="coefficient-normalized-cross-correlation"></span><h2>Coefficient Normalized Cross-Correlation<a class="headerlink" href="#module-2" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="sliding.NCCc">
-<span class="sig-prename descclassname"><span class="pre">sliding.</span></span><span class="sig-name descname"><span class="pre">NCCc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sliding.NCCc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tsdistance.sliding.NCCc">
+<span class="sig-prename descclassname"><span class="pre">tsdistance.sliding.</span></span><span class="sig-name descname"><span class="pre">NCCc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsdistance.sliding.NCCc" title="Permalink to this definition"></a></dt>
 <dd><p>The formula for Coefficient Normalized Cross-Correlation <span class="math notranslate nohighlight">\(NCC_u\)</span> is: <span class="math notranslate nohighlight">\(max(\frac{CC_{w}(\vec{x}, \vec{y})}{\vert\vert{\vec{x}}\vert\vert\cdot\vert\vert{\vec{y}}\vert\vert})\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -260,55 +169,38 @@ of length <span class="math notranslate nohighlight">\((2m-1)\)</span> that cont
 
 <p><strong>Reference</strong>
 .. [1] John Paparrizos et al. “Debunking Four Long-Standing Misconceptions ofTime-Series Distance Measures”. In:ACM SIGMOD(2020)</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="KernelMeasures.html" class="btn btn-neutral float-right" title="Kernel Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="LockstepMeasures.html" class="btn btn-neutral float-left" title="Lockstep Measures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="KernelMeasures.html" class="btn btn-neutral float-right" title="Kernel Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2022, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.
-
-    </p>
+    <p>&#169; Copyright 2024, John Paparrizos, Charlie Kaize Wu, and Marc Johnson.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
