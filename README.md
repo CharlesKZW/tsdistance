@@ -14,7 +14,7 @@ This is **alpha software under development** and currently the best way to use i
 ## Getting started
 
 ### 1. Getting the data in the right format
-tsdistance expects a time series to be formatted as a 1D `numpy` array. Distance measures in `tsdistance.ElasticMeasures` can take in time series of different length as input, while distance measures in other sections expect input time series to have equal length. 
+tsdistance expects a time series to be formatted as a 1D `numpy` array. Distance measures in `tsdistance.elastic` can take in time series of different length as input, while distance measures in other sections expect input time series to have equal length. 
 
 ```python3
 >>> from tsdistance.elastic import lcss
