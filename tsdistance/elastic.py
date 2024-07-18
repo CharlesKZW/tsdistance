@@ -2,7 +2,7 @@ import numpy as np
 from numba import jit
 import math
 from math import sqrt
-from tsdistance.mathSupport import MakeEnvForSingleTS, make_envelopes, dev
+from tsdistance.mathSupport import *
 
 
 
@@ -537,13 +537,6 @@ def lb_improved(x, y, w = None, fast = True):
     if fast == False:
         return lb_improved_n(y, x, w)
 
-# 3 following functions are helper functions of lb_improved
-@jit(nopython = True)
-def lower_b(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1]);
-  return b
 
 @jit(nopython = True)
 def upper_b(t,w):
@@ -582,11 +575,6 @@ def lb_improved_numba(x,y,w = None):
 
     return math.sqrt(lb_keogh_square(x,u,l) + lb_keogh_square(y,upper_h,lower_h))
 
-def lower_b_n(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1]);
-  return b
 
 def upper_b_n(t,w):
   b = np.zeros(len(t))
@@ -648,11 +636,11 @@ def glb_dtw(y, x, w):
             (y_j - UE(\textbf{x})_j)^2 \textup{ for } y_j \geq{UE(\textbf{x})_j} \\
             (y_j- LE(\textbf{x})_j)^2 \textup{ for } y_j \leq{LE(\textbf{x})_j} \\
             0 \textup{ otherwise }
-            \end{cases}$
+            \end{cases}
          
 
        
-        $\delta_{DTW}(\textbf{y}, \textbf{x}, w) = \sum_{i=2}^{L_{\textbf{x}} -1}\begin{cases}
+        \delta_{DTW}(\textbf{y}, \textbf{x}, w) = \sum_{i=2}^{L_{\textbf{x}} -1}\begin{cases}
             (x_i - UE(\textbf{y})_i)^2 \textup{ for } x_i \geq{UE(\textbf{y})_i} \\
             (x_i - LE(\textbf{y})_i)^2 \textup{ for } x_i \leq{LE(\textbf{y})_i} \\
             0 \textup{ otherwise }
@@ -670,7 +658,7 @@ def glb_dtw(y, x, w):
     
     **References**
 
-    .. [1] Paparrizos, K. Wu, A. Elmore, C. Faloutsos, and M. J. Franklin. 2023. Accelerating similarity search for 
+    .. [1] J. Paparrizos, K. Wu, A. Elmore, C. Faloutsos, and M. J. Franklin. 2023. Accelerating similarity search for 
            elastic measures: A study and new generalization of lower bounding distances. Proceedings of
            the VLDB Endowment, 16(8): 2019–2032.
     """
@@ -703,8 +691,6 @@ def glb_dtw(y, x, w):
 
 
     return sqrt(lb_dist)
-
-
 
 def lcss(x,y,epsilon,w = None, fast=True):
 
@@ -945,7 +931,6 @@ def lcss_scb_numba(x, y, epsilon, w):
     return 1 - result/min(len(x),len(y))
             
 
-
 def dlcss(x, y, epsilon, constraint=None, w= None):
 
     r"""Similar to Derivative Dynamic Time Warping (DDTW), 
@@ -1184,6 +1169,64 @@ def lb_keogh_lcss_numba(y, x, epsilon, w):
             sum += 1
     lb_dist = 1 - (sum/(min(len(x),len(y))))
     return lb_dist
+
+
+
+@jit(nopython = True)
+def glb_lcss(y, x, epsilon, w):
+
+    r"""
+    The Generalized Lower Bound (GLB) variant for LCSS [1] that achieves high pruning power while caching reusable computations.
+    GLB_LCSS is a state-of-the-art LCSS lower bound. The function can be imported using ``from tsdistance.elastic import glb_lcss``.
+
+    :param y: a time series
+    :type y: np.array
+    :param x: another time series
+    :type x: np.array
+    :param epsilon: the matching threshold
+    :type epsilon: float
+    :param w: ``w`` is the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_LCSS distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K. Wu, A. Elmore, C. Faloutsos, and M. J. Franklin. 2023. Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8): 2019–2032.
+    """
+
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    lenx = len(x)
+    leny = len(y)
+    fixed_sum = lcss_subcost(x[0], y[0], epsilon) + lcss_subcost(x[lenx-1], y[leny-1], epsilon)
+    
+    XLE_lower = np.subtract(XLE,epsilon)
+    XUE_higher = np.add(XUE,epsilon)
+    
+    y_reward = 0
+    
+    for i in range(1, leny-1):
+    
+        if y[i] >= XLE_lower[i] and y[i] <= XUE_higher[i]:
+            y_reward += 1
+    
+    YLE_lower = np.subtract(YLE,epsilon)
+    YUE_higher = np.add(YUE,epsilon)
+    x_reward = 0
+   
+    for i in range(1, lenx-1):
+       
+        if x[i] >= YLE_lower[i] and x[i] <= YUE_higher[i]:
+            x_reward += 1
+    
+    sum = fixed_sum + min(y_reward, x_reward)
+    lb_dist = 1 - (sum/(min(len(x),len(y))))
+    
+    return lb_dist
+
 
 # End of LCSS
 
@@ -1629,6 +1672,59 @@ def lb_kim_erp_numba(y, x, m):
     return lb_dist
 
 
+@jit(nopython = True)
+def glb_erp(y, x, m, w):
+
+    r"""
+    The Generalized Lower Bound (GLB) variant for ERP [1] that achieves high pruning power while caching reusable computations.
+    GLB_ERP is a state-of-the-art ERP lower bound. The function can be imported using ``from tsdistance.elastic import glb_erp``.
+
+    :param y: a time series
+    :type y: np.array
+    :param x: another time series
+    :type x: np.array
+    :param m: the ERP gap value
+    :type m: float
+    :param w: the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_ERP distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K., Wu, A., Elmore, C., Faloutsos, C., & Franklin, M. J. (2023). Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8), 2019–2032.
+    """
+
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w) 
+    lenx = len(x)
+    leny = len(y)
+    
+    fixed_dist = min((x[lenx-1] - y[leny-1])**2, (x[lenx-1]-m)**2, (y[leny-1]- m)**2)
+
+    y_dist = 0
+    for i in range(1, leny-1):
+
+    
+        if y[i] > XUE[i]:
+            y_dist += min((y[i]-XUE[i])**2, (y[i]-m)**2)
+        elif y[i] < XLE[i]:
+            y_dist += min((y[i]-XLE[i])**2, (y[i]-m)**2)
+    
+    x_dist = 0
+    for i in range(1, lenx-1):
+
+        if x[i] > YUE[i]:
+            x_dist += min((x[i]-YUE[i])**2, (x[i]-m)**2)
+        elif x[i] < YLE[i]:
+            x_dist += min((x[i]-YLE[i])**2, (x[i]-m)**2)
+
+    lb_dist = fixed_dist + max(x_dist, y_dist)
+    
+    return sqrt(lb_dist)
+
 # End of ERP
 
 # Start of EDR
@@ -1828,7 +1924,53 @@ def edr_scb_numba(x, y, m, w):
 
     return 0 - cur[len(y) - 1]
 
-# End of EDR
+
+@jit(nopython = True)
+def glb_edr(x, y, epsilon, w):
+
+    r"""
+    The Generalized Lower Bound (GLB) variant for EDR [1] that achieves high pruning power while caching reusable computations.
+    The function can be imported using ``from tsdistance.elastic import glb_edr``.
+
+    :param x: a time series
+    :type x: np.array
+    :param y: another time series
+    :type y: np.array
+    :param epsilon: the matching threshold
+    :type epsilon: float
+    :param w: the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_EDR distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K., Wu, A., Elmore, C., Faloutsos, C., & Franklin, M. J. (2023). Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8), 2019–2032.
+    """
+    
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    lenx = len(x)
+    leny = len(y)
+    fixed_cost = 0 + min(edr_subcost(x[lenx-1], y[leny-1], epsilon), 1)
+    y_dist = 0
+    for i in range(1, leny-1):
+        if y[i] > XUE[i]:
+            y_dist += edr_subcost(y[i], XUE[i], epsilon)
+        if y[i] < XLE[i]:
+            y_dist += edr_subcost(y[i], XLE[i], epsilon)
+    x_dist = 0
+    for i in range(1, lenx-1):
+        if x[i] > YUE[i]:
+            x_dist += edr_subcost(x[i], YUE[i], epsilon)
+        if x[i] < YLE[i]:
+            x_dist += edr_subcost(x[i], YLE[i], epsilon)
+
+    lb_dist = fixed_cost + max(x_dist, y_dist)
+
+    return lb_dist
 
 # Start of TWED
 
@@ -2126,6 +2268,7 @@ def lb_twed_n(y, x, lamb, nu, w):
 
 @jit(nopython = True)
 def lb_twed_numba(y, x, lamb, nu, w):
+
     lenx = len(x)
     leny = len(y)
 
@@ -2144,6 +2287,67 @@ def lb_twed_numba(y, x, lamb, nu, w):
             lb_dist += min(nu, (y[i]- min(XLE[i], y[i-1]))**2)
         
     return lb_dist
+
+
+
+@jit(nopython = True)
+def glb_twed(x, y, lamb, w):
+
+    r"""
+    The Generalized Lower Bound (GLB) variant for TWED [1] that achieves high pruning power while caching reusable computations.
+    GLB_TWED is a state-of-the-art TWED lower bound. The function can be imported using ``from tsdistance.elastic import glb_twed``.
+
+    :param x: a time series
+    :type x: np.array
+    :param y: another time series
+    :type y: np.array
+    :param lamb:  the cost of delete operation, :math:`\lambda`.
+    :type lamb: float
+    :param w: the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_TWED distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K., Wu, A., Elmore, C., Faloutsos, C., & Franklin, M. J. (2023). Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8), 2019–2032.
+    
+    """
+
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    leny = len(y)
+    lenx = len(x)
+
+    fixed_dist = abs(x[0]-y[0]) + min(
+                                    abs(x[lenx-1]-y[leny-1]),
+                                    abs(y[lenx-1]-y[lenx-2])+lamb,
+                                    abs(x[lenx-1]-x[lenx-2])+lamb
+                                    )
+
+    
+    y_dist = 0
+    for i in range(1, leny-1):
+
+        if y[i]>=XUE[i] and y[i-1]>=XUE[i]:
+            y_dist += min((abs(y[i]-XUE[i]) + abs(y[i-1]-XUE[i])), (abs(y[i]-y[i-1])+lamb))
+        if y[i]<=XLE[i] and y[i-1]<=XLE[i]:
+            y_dist += min(abs(y[i]-XLE[i]) + abs(y[i-1]-XLE[i]), abs(y[i]-y[i-1])+lamb)
+
+    x_dist = 0
+    for i in range(1, lenx-1):
+
+        if x[i]>=YUE[i] and x[i-1]>=YUE[i]:
+            x_dist += min((abs(x[i]-YUE[i]) + abs(x[i-1]-YUE[i])), (abs(x[i]-y[i-1])+lamb))
+        if y[i]<=YLE[i] and y[i-1]<=YLE[i]:
+            x_dist += min(abs(x[i]-YLE[i]) + abs(x[i-1]-YLE[i]), abs(x[i]-x[i-1])+lamb)
+
+    lb_dist = fixed_dist + max(y_dist, x_dist)
+
+    return lb_dist
+
 
 # End of TWED
 
@@ -2228,15 +2432,6 @@ def msm(x,y,c,constraint=None,w=None, fast = True):
             return msm_scb_numba(x,y,c,w)
         if fast == False:
             return msm_scb(x,y,c,w)
-
-@jit(nopython=True)
-def msm_dist(new, x, y, c):
-    if ((x <= new) and (new <= y)) or ((y <= new) and (new <= x)):
-        dist = c
-    else:
-        dist = c + min(abs(new - x), abs(new - y))
-    return dist
-
 
 @jit(nopython=True)
 def msm_n_numba(x,y,c):
@@ -2400,6 +2595,66 @@ def lb_msm_n(y, x, c, w = None):
         if y[i] < XLE[i] and y[i-1] <= y[i]:
             lb_dist += min(abs(y[i]-XLE[i]), c)
     
+    return lb_dist
+
+
+@jit(nopython = True)
+def glb_msm(x, y, c, w):
+
+    r"""
+    The Generalized Lower Bound (GLB) variant for MSM [1] that achieves high pruning power while caching reusable computations.
+    GLB_MSM is a state-of-the-art MSM lower bound, which can be imported using ``from tsdistance.elastic import glb_msm``.
+
+    :param x: a time series
+    :type x: np.array
+    :param y: another time series
+    :type y: np.array
+    :param c: the cost for move or split operation for MSM
+    :type c: float
+    :param w: the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_MSM distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K., Wu, A., Elmore, C., Faloutsos, C., & Franklin, M. J. (2023). Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8), 2019–2032.
+    """
+
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    leny = len(y)
+    lenx = len(x)
+    
+
+    if y[leny-2]>=y[leny-1]>=x[lenx-1] or y[leny-2]<=y[leny-1]<=x[lenx-1] or x[lenx-2]<=x[lenx-1]<=y[leny-1] or x[lenx-2]>=x[lenx-1]>=y[leny-1]:
+        fixed_dist = abs(x[0]-y[0]) + min(abs(x[lenx-1]-y[leny-1]), c)
+    else:
+        fixed_dist = abs(x[0]-y[0]) + min(
+                                        abs(x[lenx-1]-y[leny-1]),
+                                        c + abs(y[leny-1] - y[leny-2]),
+                                        c + abs(x[lenx-1] - x[lenx-2]))
+
+    y_dist = 0
+    for i in range(1, leny-1):
+
+        if y[i] > XUE[i]:
+            y_dist += min(abs(y[i]-XUE[i]), c)
+        if y[i] < XLE[i]:
+            y_dist += min(abs(y[i]-XLE[i]), c)
+        
+    x_dist = 0
+    for i in range(1, lenx-1):
+
+        if x[i] > YUE[i]:
+            x_dist += min(abs(x[i]-YUE[i]), c)
+        if x[i] < YLE[i]:
+            x_dist += min(abs(x[i]-YLE[i]), c)
+
+    lb_dist = fixed_dist + max(y_dist, x_dist)
+
     return lb_dist
 
 
@@ -2614,3 +2869,58 @@ def swale_scb(x,y,p,r,epsilon,w):
                    cur[j] = min(prev[j], cur[j-1]) + p
     return cur[leny-1]
 
+
+@jit(nopython = True)
+def glb_swale(x, y, p, r, epsilon, w): 
+    r"""
+    The Generalized Lower Bound (GLB) variant for SWALE [1] that achieves high pruning power while caching reusable computations.
+    The function can be imported using ``from tsdistance.elastic import glb_swale``.
+
+    :param x: a time series
+    :type x: np.array
+    :param y: another time series
+    :type y: np.array
+    :param p: the penalty for mismatches
+    :type p: float
+    :param r: the reward for matches
+    :type r: float
+    :param epsilon: the matching threshold
+    :type epsilon: float
+    :param w: the largest temporal shift allowed between two time series
+    :type w: int
+    :return: The GLB_SWALE distance
+    :rtype: float
+    
+    **References**
+
+    .. [1] J. Paparrizos, K., Wu, A., Elmore, C., Faloutsos, C., & Franklin, M. J. (2023). Accelerating similarity search for 
+           elastic measures: A study and new generalization of lower bounding distances. Proceedings of
+           the VLDB Endowment, 16(8), 2019–2032.
+    """
+    
+    XUE, XLE = MakeEnvForSingleTS(x, w)
+    YUE, YLE = MakeEnvForSingleTS(y, w)
+    lenx = len(x)
+    leny = len(y)
+
+    fixed_cost = 0 + min(swale_subcost(x[lenx-1], y[leny-1], epsilon, p, r), p)
+
+    y_dist = 0
+    for i in range(1, leny-1):
+    
+        if y[i] > XUE[i]:
+            y_dist += swale_subcost(y[i], XUE[i], epsilon, p, r)
+        if y[i] < XLE[i]:
+            y_dist += swale_subcost(y[i], XLE[i], epsilon, p, r)
+    
+    x_dist = 0
+    for i in range(1, lenx-1):
+    
+        if x[i] > YUE[i]:
+            x_dist += swale_subcost(x[i], YUE[i], epsilon, p, r)
+        if x[i] < YLE[i]:
+            x_dist += swale_subcost(x[i], YLE[i], epsilon, p, r)
+
+    lb_dist = fixed_cost + max(x_dist, y_dist)
+
+    return lb_dist

@@ -92,6 +92,8 @@ DTW Lower Bounds
 
 .. automodule:: tsdistance.elastic
 
+    .. autofunction:: glb_dtw
+
     .. autofunction:: lb_kim
     
     .. autofunction:: lb_keogh
@@ -99,6 +101,7 @@ DTW Lower Bounds
     .. autofunction:: lb_new
 
     .. autofunction:: lb_improved
+
 
 Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
 ==============================================================
@@ -108,10 +111,12 @@ Longest Common Subsequence (LCSS) and Derivative LCSS (DLCSS)
     .. autofunction:: lcss
 
     .. autofunction:: dlcss
-
+    
 LCSS Lower Bounds
 ===================
 .. automodule:: tsdistance.elastic
+
+    .. autofunction:: glb_lcss
 
     .. autofunction:: lb_keogh_lcss
     
@@ -120,6 +125,12 @@ Sequence Weighted Alignment (SWALE)
 .. automodule:: tsdistance.elastic
 
     .. autofunction:: swale
+
+SWALE Lower Bound
+==================
+.. automodule:: tsdistance.elastic
+
+    .. autofunction:: glb_swale
 
 Edit Distance with Real Penalty (ERP)
 =====================================
@@ -131,6 +142,8 @@ Edit Distance with Real Penalty (ERP)
 ERP Lower Bounds
 ===================
 .. automodule:: tsdistance.elastic
+
+     .. autofunction:: glb_erp
 
     .. autofunction:: lb_erp
 
@@ -145,6 +158,13 @@ Edit Distance on Real Sequences (EDR)
 
     .. autofunction:: edr
 
+EDR Lower Bound
+================
+.. automodule:: tsdistance.elastic
+
+    .. autofunction:: glb_edr
+
+
 Time Warp Edit Distance (TWED)
 ===============================
 .. automodule:: tsdistance.elastic
@@ -154,6 +174,8 @@ Time Warp Edit Distance (TWED)
 TWED Lower Bound
 ===================
 .. automodule:: tsdistance.elastic
+
+    .. autofunction:: glb_twed
 
     .. autofunction:: lb_twed
 
@@ -168,6 +190,6 @@ MSM Lower Bound
 ===================
 .. automodule:: tsdistance.elastic
 
+    .. autofunction:: glb_msm
+
     .. autofunction:: lb_msm
-
-

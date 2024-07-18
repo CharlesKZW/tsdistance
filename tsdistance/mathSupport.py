@@ -41,3 +41,51 @@ def dev(X):
     dX = np.concatenate((first_col.T, dX), axis = 1)
     dX = np.concatenate((dX, last_col.T), axis =1)
     return dX
+
+@jit(nopython = True)
+def lcss_subcost(x, y, epsilon):
+    if abs(x-y) <= epsilon: 
+        r = 1
+    else:
+        r = 0
+    return r
+
+def lower_b_n(t,w):
+  b = np.zeros(len(t))
+  for i in range(len(t)):
+    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1])
+  return b
+
+
+@jit(nopython = True)
+def lower_b(t,w):
+  b = np.zeros(len(t))
+  for i in range(len(t)):
+    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1])
+  return b
+
+
+@jit(nopython = True)
+def swale_subcost(x, y, epsilon, p , r):
+    if abs(x-y) <= epsilon:
+        cost = r
+    else:
+        cost = p
+
+    return cost
+
+@jit(nopython=True)
+def msm_dist(new, x, y, c):
+    if ((x <= new) and (new <= y)) or ((y <= new) and (new <= x)):
+        dist = c
+    else:
+        dist = c + min(abs(new - x), abs(new - y))
+    return dist
+
+@jit(nopython = True)
+def edr_subcost(x, y, epsilon):
+    if abs(x-y) <= epsilon:
+        cost = 0
+    else:
+        cost = 1
+    return cost
