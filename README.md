@@ -78,6 +78,9 @@ After getting the data in the right format, a model can be trained. `tsdistance`
 - Shift INvariant Kernel (SINK);
 - Log Global Alignment Kernel (LGAK)
 
+**Multivariate Distance Measures**
+*in progress*
+
 ## Documentation
 
 The documentation is hosted at [[tsdistance]](https://flourishing-ganache-f26bde.netlify.app/index.html). It includes an API and a user guide.

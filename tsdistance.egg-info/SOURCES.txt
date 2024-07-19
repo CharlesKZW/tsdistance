@@ -1,0 +1,7 @@
+README.md
+setup.py
+tsdistance.egg-info/PKG-INFO
+tsdistance.egg-info/SOURCES.txt
+tsdistance.egg-info/dependency_links.txt
+tsdistance.egg-info/requires.txt
+tsdistance.egg-info/top_level.txt
