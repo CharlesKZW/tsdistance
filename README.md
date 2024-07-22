@@ -5,7 +5,7 @@
 
 <!-- Short description -->
 <p align="center">
-  tsdistance is a open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
+  tsdistance provides distance measures (a.k.a. metrics) suitable for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, etc.
 </p>
 
 ## Installation
@@ -84,6 +84,5 @@ After getting the data in the right format, a model can be trained. `tsdistance`
 
 ## Documentation
 
-The documentation is hosted at [[tsdistance]](https://flourishing-ganache-f26bde.netlify.app/index.html). It includes an API and a user guide.
-
+The documentation is hosted at [tsdistance](https://tsdistance.readthedocs.io/en/latest/).
 
