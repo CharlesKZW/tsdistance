@@ -11,6 +11,35 @@
 
 from PyPi: ``python -m pip install tsdistance``
 
+## Examples
+
+### 1. Compute distance between two time series
+
+
+```python3
+>>> from tsdistance.elastic import lcss
+>>> import numpy as np
+>>> X = np.array([3, 4, 38, 4, 5])
+>>> Y = np.array([0, 3, 4])
+>>> lcss_dist = lcss(X, Y, epsilon = 0.7)
+>>> lcss_dist
+
+>>> 0.33333333333333337
+```
+
+
+### 2. Use a distance measure in a machine learning model (e.g. classfication)
+
+```python3
+>>> from tsdistance import OneNN
+>>> model = OneNN(metric = 'lcss')
+>>> model.fit(Coffee_train_X, Coffee_train_y)
+>>> predicted_label = model.predict(Coffee_test_X)
+>>> print('predicted_label: ', predicted_label)
+
+>>> lb_predict:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+```
+
 
 ## Available features
 
@@ -50,34 +79,7 @@ from PyPi: ``python -m pip install tsdistance``
 **Multivariate Distance Measures**
 - *in progress*
 
-## Examples
 
-### 1. Compute distance between two time series
-
-
-```python3
->>> from tsdistance.elastic import lcss
->>> import numpy as np
->>> X = np.array([3, 4, 38, 4, 5])
->>> Y = np.array([0, 3, 4])
->>> lcss_dist = lcss(X, Y, epsilon = 0.7)
->>> lcss_dist
-
->>> 0.33333333333333337
-```
-
-
-### 2. Use a distance measure in a machine learning model (e.g. classfication)
-
-```python3
->>> from tsdistance import OneNN
->>> model = OneNN(metric = 'lcss')
->>> model.fit(Coffee_train_X, Coffee_train_y)
->>> predicted_label = model.predict(Coffee_test_X)
->>> print('predicted_label: ', predicted_label)
-
->>> lb_predict:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
-```
 
 
 
