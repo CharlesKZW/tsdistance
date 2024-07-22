@@ -4,7 +4,9 @@
 </div>
 
 <!-- Short description -->
-  tsdistance provides distance measures (a.k.a. metrics) suitable for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, etc. For details, please see the [documentation](https://tsdistance.readthedocs.io/en/latest/).
+  tsdistance provides distance measures (a.k.a. metrics) suitable for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, etc. 
+  
+  For details, please see the [documentation](https://tsdistance.readthedocs.io/en/latest/).
 
 
 ## Installation
