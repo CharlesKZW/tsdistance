@@ -13,7 +13,7 @@ from PyPi: ``python -m pip install tsdistance``
 
 ## Examples
 
-### 1. Compute distance between two time series
+### 1. Compute the distance between two time series
 
 
 ```python3
