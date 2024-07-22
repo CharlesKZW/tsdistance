@@ -1,5 +1,7 @@
 <!-- Our title -->
-# *tsdistance*: time series distance measures
+<div align="center">
+  <h1><i>tsdistance</i>: time series distance measures</h1>
+</div>
 
 <!-- Short description -->
 <p align="center">
