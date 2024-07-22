@@ -5,12 +5,12 @@
 
 <!-- Short description -->
 <p align="center">
-  tsdistance is a comprehensive  open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
+  tsdistance is a open-source library for time series distance measures, which can be used in various time series machine learning tasks (classification, clustering, motif discovery, etc.)
 </p>
 
 ## Installation
 
-Install from PyPi: ``python -m pip install tsdistance``
+from PyPi: ``python -m pip install tsdistance``
 
 ## Getting started
 
