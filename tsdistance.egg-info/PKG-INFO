@@ -5,5 +5,8 @@ Summary: Python Library for Time Series Distance Measure
 Home-page: https://github.com/CharlesKZW/tsdistance
 Author: The DATUM Lab
 Author-email: your.email@example.com
-Requires-Dist: numpy
-Requires-Dist: numba
+License: UNKNOWN
+Platform: UNKNOWN
+
+UNKNOWN
+
