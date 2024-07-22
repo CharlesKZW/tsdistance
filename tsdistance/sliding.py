@@ -1,7 +1,8 @@
-import numpy as np;
+import numpy as np
 import math
 
-def NCC(x,y):
+
+def NCC(x, y):
     r"""
     The formula for Normalized Cross-Correlation (:math:`NCC`) is: :math:`max(CC_{w}(\vec{x}, \vec{y}))`.
 
@@ -12,17 +13,18 @@ def NCC(x,y):
     :return: the NCC distance
     """
 
-    length = len(x);
-    fftlen = 2 ** math.ceil(math.log2(abs(2*length-1)));
-    r = np.fft.ifft(np.multiply(np.fft.fft(x,fftlen),np.conj(np.fft.fft(y,fftlen))))
-    
-    lenr = len(r) - 1;
+    length = len(x)
+    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
+    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
 
-    result = np.append(r[lenr-length+2:lenr + 1],r[0:length])
+    lenr = len(r) - 1
 
-    return result;
+    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
 
-def NCCb(x,y):
+    return result
+
+
+def NCCb(x, y):
 
     r"""
     The formula for Biased Normalized Cross-Correlation (:math:`NCC_b`) is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{m})`
@@ -35,18 +37,18 @@ def NCCb(x,y):
     :return: the NCCb distance
     """
 
-    length = len(x);
-    fftlen = 2 ** math.ceil(math.log2(abs(2*length-1)));
-    r = np.fft.ifft(np.multiply(np.fft.fft(x,fftlen),np.conj(np.fft.fft(y,fftlen))))
-    
-    lenr = len(r) - 1;
+    length = len(x)
+    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
+    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
 
-    result = np.append(r[lenr-length+2:lenr + 1],r[0:length])
+    lenr = len(r) - 1
 
-    return np.divide(result,length);
+    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
+
+    return np.divide(result, length)
 
 
-def NCCc(x,y):
+def NCCc(x, y):
 
     r"""
     The formula for Coefficient Normalized Cross-Correlation :math:`NCC_u` is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{\vert\vert{\vec{x}}\vert\vert\cdot\vert\vert{\vec{y}}\vert\vert})`
@@ -57,17 +59,18 @@ def NCCc(x,y):
     :type y: np.array
     :return: the NCCc distance
     """
-    length = len(x);
-    fftlen = 2 ** math.ceil(math.log2(abs(2*length-1)));
-    r = np.fft.ifft(np.multiply(np.fft.fft(x,fftlen),np.conj(np.fft.fft(y,fftlen))))
-    
-    lenr = len(r) - 1;
+    length = len(x)
+    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
+    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
 
-    result = np.append(r[lenr-length+2:lenr + 1],r[0:length])
+    lenr = len(r) - 1
 
-    return np.divide(result,np.linalg.norm(x) * np.linalg.norm(y))
+    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
 
-def NCCu(x,y):
+    return np.divide(result, np.linalg.norm(x) * np.linalg.norm(y))
+
+
+def NCCu(x, y):
 
     r"""
     The formula for Unbiased Normalized Cross-Correlation (:math:`NCC_u`) is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{m-|w-m|})`
@@ -79,15 +82,15 @@ def NCCu(x,y):
     :return: the NCCu distance
     """
 
-    result = np.correlate(x,y,'full');
+    result = np.correlate(x, y, "full")
 
-    max = math.ceil(len(result)/2);
+    max = math.ceil(len(result) / 2)
 
     a = []
     for i in range(result.size):
-            if (i > max - 1):
-                a.append(2*max-(i + 1));
-            else:
-                a.append(i + 1);
+        if i > max - 1:
+            a.append(2 * max - (i + 1))
+        else:
+            a.append(i + 1)
 
-    return np.divide(result,a);
+    return np.divide(result, a)

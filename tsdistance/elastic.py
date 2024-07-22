@@ -5,9 +5,8 @@ from math import sqrt
 from tsdistance.mathSupport import *
 
 
-
 # Start of DTW
-def dtw(x, y, w = None, fast = True):
+def dtw(x, y, w=None, fast=True):
 
     r"""Dynamic Time Warping (DTW) [1]_ utilizes dynamic programming to find 
     the optimal alignment between elements of times series :math:`X = (x_{1}, x_{2}, ..., x_{n})` 
@@ -71,21 +70,23 @@ def dtw(x, y, w = None, fast = True):
     if fast == False:
         return dtw_scb(x, y, w)
 
+
 def dtw_scb(x, y, w):
     N = len(x)
     M = len(y)
     if w == None:
         w = max(N, M)
-    D = np.full((N+1, M+1), np.inf)
+    D = np.full((N + 1, M + 1), np.inf)
     D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(max(1, i-w), min(i+w, M)+1):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
+    for i in range(1, N + 1):
+        for j in range(max(1, i - w), min(i + w, M) + 1):
+            cost = (x[i - 1] - y[j - 1]) ** 2
+            D[i, j] = cost + min(D[i - 1, j], D[i - 1, j - 1], D[i, j - 1])
 
     Dist = math.sqrt(D[N, M])
 
     return Dist
+
 
 @jit(nopython=True)
 def dtw_scb_numba(x, y, w):
@@ -93,19 +94,19 @@ def dtw_scb_numba(x, y, w):
     M = len(y)
     if w == None:
         w = max(N, M)
-    D = np.full((N+1, M+1), np.inf)
+    D = np.full((N + 1, M + 1), np.inf)
     D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(max(1, i-w), min(i+w, M)+1):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
+    for i in range(1, N + 1):
+        for j in range(max(1, i - w), min(i + w, M) + 1):
+            cost = (x[i - 1] - y[j - 1]) ** 2
+            D[i, j] = cost + min(D[i - 1, j], D[i - 1, j - 1], D[i, j - 1])
 
     Dist = math.sqrt(D[N, M])
 
     return Dist
 
 
-def ddtw(x, y, constraint=None, w= None):
+def ddtw(x, y, constraint=None, w=None):
 
     r"""One weakness of Dynamic Time Warping is the exclusive focus on values rather than "shape" 
     which results in misalignment. 
@@ -169,20 +170,22 @@ def ddtw(x, y, constraint=None, w= None):
         return ddtw_n(x, y)
     elif constraint == "Sakoe-Chiba":
         return ddtw_scb(x, y, w)
-        
+
+
 def ddtw_n(x, y):
     y = np.squeeze(dev(np.array([y])))
     x = np.squeeze(dev(np.array([x])))
     N = len(x)
     M = len(y)
-    D = np.full((N+1, M+1), np.inf)
+    D = np.full((N + 1, M + 1), np.inf)
     D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(1, M+1):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
+    for i in range(1, N + 1):
+        for j in range(1, M + 1):
+            cost = (x[i - 1] - y[j - 1]) ** 2
+            D[i, j] = cost + min(D[i - 1, j], D[i - 1, j - 1], D[i, j - 1])
     Dist = math.sqrt(D[N, M])
     return Dist
+
 
 def ddtw_scb(x, y, w):
     y = np.squeeze(dev(np.array([y])))
@@ -191,17 +194,18 @@ def ddtw_scb(x, y, w):
     M = len(y)
     if w == None:
         w = max(N, M)
-    D = np.full((N+1, M+1), np.inf)
+    D = np.full((N + 1, M + 1), np.inf)
     D[0, 0] = 0
-    for i in range(1, N+1):
-        for j in range(max(1, i-w), min(i+w, M)+1):
-            cost = (x[i-1] - y[j-1])**2
-            D[i, j] = cost + min(D[i-1,j],D[i-1,j-1],D[i,j-1])
+    for i in range(1, N + 1):
+        for j in range(max(1, i - w), min(i + w, M) + 1):
+            cost = (x[i - 1] - y[j - 1]) ** 2
+            D[i, j] = cost + min(D[i - 1, j], D[i - 1, j - 1], D[i, j - 1])
 
     Dist = math.sqrt(D[N, M])
     return Dist
 
-def lb_kim(y, x, fast = True):
+
+def lb_kim(y, x, fast=True):
 
     r"""LB_Kim [1]_ is the fastest DTW lower bound with :math:`O(1)` complexity, 
     defined as the following:
@@ -258,23 +262,29 @@ def lb_kim(y, x, fast = True):
     if fast == False:
         return lb_kim_n(y, x)
 
-@jit(nopython = True)
+
+@jit(nopython=True)
 def lb_kim_numba(y, x):
-    lb_dist = max(abs(x[0] - y[0]),
-                  abs(x[len(x)-1] - y[len(y)-1]),
-                  abs(max(x)- max(y)),
-                  abs(min(x)- min(y)))
+    lb_dist = max(
+        abs(x[0] - y[0]),
+        abs(x[len(x) - 1] - y[len(y) - 1]),
+        abs(max(x) - max(y)),
+        abs(min(x) - min(y)),
+    )
     return lb_dist
+
 
 def lb_kim_n(y, x):
-    lb_dist = max(abs(x[0] - y[0]),
-                  abs(x[len(x)-1] - y[len(y)-1]),
-                  abs(max(x)- max(y)),
-                  abs(min(x)- min(y)))
+    lb_dist = max(
+        abs(x[0] - y[0]),
+        abs(x[len(x) - 1] - y[len(y) - 1]),
+        abs(max(x) - max(y)),
+        abs(min(x) - min(y)),
+    )
     return lb_dist
 
 
-def lb_keogh (y, x, w = None, fast = True):
+def lb_keogh(y, x, w=None, fast=True):
 
     r"""LB_Keogh [1]_ is one of the most popular dtw lower bounds. 
     LB_Keogh constructs upper and lower envelopes of query series and compute
@@ -340,35 +350,19 @@ def lb_keogh (y, x, w = None, fast = True):
     if fast == False:
         return lb_keogh_n(y, x, w)
 
-@jit(nopython = True)
-def lb_keogh_numba(y, x, w): 
-    leny = len(y)
-    lenx = len(x)
-    if w == None:
-        w = max(lenx, leny)
-    lb_dist = 0
-    for i in range(leny):
-        wmin = max(0, i-w)
-        wmax = min(i+w, lenx-1)
-        UE = max(x[wmin : wmax +1])
-        LE = min(x[wmin : wmax +1])
-        if y[i] > UE:
-            lb_dist += (y[i] - UE) ** 2
-        if y[i] < LE:
-            lb_dist += (y[i] - LE) ** 2
-    return math.sqrt(lb_dist)
 
-def lb_keogh_n(y, x, w): 
+@jit(nopython=True)
+def lb_keogh_numba(y, x, w):
     leny = len(y)
     lenx = len(x)
     if w == None:
         w = max(lenx, leny)
     lb_dist = 0
     for i in range(leny):
-        wmin = max(0, i-w)
-        wmax = min(i+w, lenx-1)
-        UE = max(x[wmin : wmax +1])
-        LE = min(x[wmin : wmax +1])
+        wmin = max(0, i - w)
+        wmax = min(i + w, lenx - 1)
+        UE = max(x[wmin : wmax + 1])
+        LE = min(x[wmin : wmax + 1])
         if y[i] > UE:
             lb_dist += (y[i] - UE) ** 2
         if y[i] < LE:
@@ -376,8 +370,25 @@ def lb_keogh_n(y, x, w):
     return math.sqrt(lb_dist)
 
 
+def lb_keogh_n(y, x, w):
+    leny = len(y)
+    lenx = len(x)
+    if w == None:
+        w = max(lenx, leny)
+    lb_dist = 0
+    for i in range(leny):
+        wmin = max(0, i - w)
+        wmax = min(i + w, lenx - 1)
+        UE = max(x[wmin : wmax + 1])
+        LE = min(x[wmin : wmax + 1])
+        if y[i] > UE:
+            lb_dist += (y[i] - UE) ** 2
+        if y[i] < LE:
+            lb_dist += (y[i] - LE) ** 2
+    return math.sqrt(lb_dist)
 
-def lb_new(y, x, w = None, fast = True):
+
+def lb_new(y, x, w=None, fast=True):
 
     r"""LB_New [1]_ is a tighter and more expensive lower bound of DTW relative to LB_Keogh.
     LB_New is formally defined as:
@@ -433,16 +444,16 @@ def lb_new(y, x, w = None, fast = True):
         return lb_new_n(y, x, w)
 
 
-def lb_new_n(y, x, w = None):
-    
+def lb_new_n(y, x, w=None):
+
     leny = len(y)
     lenx = len(x)
     if w == None:
         w = max(lenx, leny)
-    lb_dist = (x[0]-y[0]) ** 2 + (x[lenx-1] - y[leny-1]) **2
-    for i in range(1,leny-1):
+    lb_dist = (x[0] - y[0]) ** 2 + (x[lenx - 1] - y[leny - 1]) ** 2
+    for i in range(1, leny - 1):
         wmin = max(0, i - w)
-        wmax = min(lenx - 1, i + w) 
+        wmax = min(lenx - 1, i + w)
         wx = np.array([i for i in x[wmin : wmax + 1]])
         Y = np.full(wx.shape[0], -y[i])
         diff = np.add(wx, Y)
@@ -451,17 +462,18 @@ def lb_new_n(y, x, w = None):
 
     return math.sqrt(lb_dist)
 
-@jit(nopython = True)
-def lb_new_numba(y, x, w = None):
-    
+
+@jit(nopython=True)
+def lb_new_numba(y, x, w=None):
+
     leny = len(y)
     lenx = len(x)
     if w == None:
         w = max(lenx, leny)
-    lb_dist = (x[0]-y[0]) ** 2 + (x[lenx-1] - y[leny-1]) **2
-    for i in range(1,leny-1):
+    lb_dist = (x[0] - y[0]) ** 2 + (x[lenx - 1] - y[leny - 1]) ** 2
+    for i in range(1, leny - 1):
         wmin = max(0, i - w)
-        wmax = min(lenx - 1, i + w) 
+        wmax = min(lenx - 1, i + w)
         wx = np.array([i for i in x[wmin : wmax + 1]])
         Y = np.full(wx.shape[0], -y[i])
         diff = np.add(wx, Y)
@@ -470,7 +482,8 @@ def lb_new_numba(y, x, w = None):
 
     return math.sqrt(lb_dist)
 
-def lb_improved(x, y, w = None, fast = True):
+
+def lb_improved(x, y, w=None, fast=True):
 
     r"""LB_Improved [1]_ obtains greater pruning power over LB_Keogh
     by performing LB_Keogh twice. LB_Improved computes ordinary LB_Keogh as well as LB_Keogh between query
@@ -538,25 +551,27 @@ def lb_improved(x, y, w = None, fast = True):
         return lb_improved_n(y, x, w)
 
 
-@jit(nopython = True)
-def upper_b(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = max(t[max(0,i-w):min(len(t)-1,i+w)+1])
-  return b
-    
-@jit(nopython = True)
-def lb_keogh_square(x,u,l):
-  sumd = 0
-  for i in range(len(x)):
-    if x[i] > u[i]:
-      sumd += (x[i] - u[i]) ** 2
-    if x[i] < l[i]:
-      sumd += (x[i] - l[i]) ** 2
-  return sumd 
+@jit(nopython=True)
+def upper_b(t, w):
+    b = np.zeros(len(t))
+    for i in range(len(t)):
+        b[i] = max(t[max(0, i - w) : min(len(t) - 1, i + w) + 1])
+    return b
 
-@jit(nopython = True)
-def lb_improved_numba(x,y,w = None):
+
+@jit(nopython=True)
+def lb_keogh_square(x, u, l):
+    sumd = 0
+    for i in range(len(x)):
+        if x[i] > u[i]:
+            sumd += (x[i] - u[i]) ** 2
+        if x[i] < l[i]:
+            sumd += (x[i] - l[i]) ** 2
+    return sumd
+
+
+@jit(nopython=True)
+def lb_improved_numba(x, y, w=None):
     if w == None:
         w = max(len(x), len(y))
     YUE, YLE = make_envelopes(y, w)
@@ -570,28 +585,30 @@ def lb_improved_numba(x,y,w = None):
             h.append(u[i])
         else:
             h.append(x[i])
-    upper_h = upper_b(h,w)
-    lower_h = lower_b(h,w)
+    upper_h = upper_b(h, w)
+    lower_h = lower_b(h, w)
 
-    return math.sqrt(lb_keogh_square(x,u,l) + lb_keogh_square(y,upper_h,lower_h))
+    return math.sqrt(lb_keogh_square(x, u, l) + lb_keogh_square(y, upper_h, lower_h))
 
 
-def upper_b_n(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = max(t[max(0,i-w):min(len(t)-1,i+w)+1])
-  return b
-    
-def lb_keogh_square_n(x,u,l):
-  sumd = 0
-  for i in range(len(x)):
-    if x[i] > u[i]:
-      sumd += (x[i] - u[i]) ** 2
-    if x[i] < l[i]:
-      sumd += (x[i] - l[i]) ** 2
-  return sumd 
+def upper_b_n(t, w):
+    b = np.zeros(len(t))
+    for i in range(len(t)):
+        b[i] = max(t[max(0, i - w) : min(len(t) - 1, i + w) + 1])
+    return b
 
-def lb_improved_n(x,y,w = None):
+
+def lb_keogh_square_n(x, u, l):
+    sumd = 0
+    for i in range(len(x)):
+        if x[i] > u[i]:
+            sumd += (x[i] - u[i]) ** 2
+        if x[i] < l[i]:
+            sumd += (x[i] - l[i]) ** 2
+    return sumd
+
+
+def lb_improved_n(x, y, w=None):
     if w == None:
         w = max(len(x), len(y))
     YUE, YLE = make_envelopes(y, w)
@@ -605,12 +622,15 @@ def lb_improved_n(x,y,w = None):
             h.append(u[i])
         else:
             h.append(x[i])
-    upper_h = upper_b_n(h,w)
-    lower_h = lower_b_n(h,w)
+    upper_h = upper_b_n(h, w)
+    lower_h = lower_b_n(h, w)
 
-    return math.sqrt(lb_keogh_square_n(x,u,l) + lb_keogh_square_n(y,upper_h,lower_h))
+    return math.sqrt(
+        lb_keogh_square_n(x, u, l) + lb_keogh_square_n(y, upper_h, lower_h)
+    )
 
-@jit(nopython = True)
+
+@jit(nopython=True)
 def glb_dtw(y, x, w):
 
     r"""
@@ -667,32 +687,32 @@ def glb_dtw(y, x, w):
     YUE, YLE = MakeEnvForSingleTS(y, w)
     leny = len(y)
     lenx = len(x)
-    fixed_dist = (x[0]-y[0]) **2 + (x[lenx-1] - y[leny-1])**2
+    fixed_dist = (x[0] - y[0]) ** 2 + (x[lenx - 1] - y[leny - 1]) ** 2
 
     y_dist = 0
 
-    for i in range(1, leny-1):
+    for i in range(1, leny - 1):
 
         if y[i] > XUE[i]:
-            y_dist += (y[i] - XUE[i]) **2
+            y_dist += (y[i] - XUE[i]) ** 2
         if y[i] < XLE[i]:
-            y_dist += (y[i] - XLE[i]) **2
+            y_dist += (y[i] - XLE[i]) ** 2
 
     x_dist = 0
-    
-    for i in range(1, lenx-1):
+
+    for i in range(1, lenx - 1):
 
         if x[i] > YUE[i]:
-            x_dist += (x[i] - YUE[i]) **2
+            x_dist += (x[i] - YUE[i]) ** 2
         if x[i] < YLE[i]:
-            x_dist += (x[i] - YLE[i]) **2
+            x_dist += (x[i] - YLE[i]) ** 2
 
     lb_dist = fixed_dist + max(x_dist, y_dist)
 
-
     return sqrt(lb_dist)
 
-def lcss(x,y,epsilon,w = None, fast=True):
+
+def lcss(x, y, epsilon, w=None, fast=True):
 
     r"""
     Longest Common Subsequence (LCSS) [1]_ defines similarity by counting the number of "matches" between two time series, 
@@ -778,9 +798,10 @@ def lcss(x,y,epsilon,w = None, fast=True):
     """
 
     if fast == True:
-        return lcss_scb_numba(x, y, epsilon,w)
+        return lcss_scb_numba(x, y, epsilon, w)
     if fast == False:
         return lcss_scb(x, y, epsilon, w)
+
 
 def lcss_n(x, y, epsilon):
     lenx = len(x)
@@ -788,34 +809,31 @@ def lcss_n(x, y, epsilon):
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = 0
-        wmax = leny-1
-        for j in range(wmin, wmax+1):
+        wmax = leny - 1
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
+
 
 def lcss_scb(x, y, epsilon, w):
     lenx = len(x)
@@ -824,35 +842,32 @@ def lcss_scb(x, y, epsilon, w):
         w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
-        wmin = max(0, i-w)
-        wmax = min(leny-1, i+w)
-        for j in range(wmin, wmax+1):
+        wmin = max(0, i - w)
+        wmax = min(leny - 1, i + w)
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
+
 
 @jit(nopython=True)
 def lcss_n_numba(x, y, epsilon):
@@ -863,34 +878,31 @@ def lcss_n_numba(x, y, epsilon):
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = 0
-        wmax = leny-1
-        for j in range(wmin, wmax+1):
+        wmax = leny - 1
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
+
 
 @jit(nopython=True)
 def lcss_scb_numba(x, y, epsilon, w):
@@ -900,38 +912,34 @@ def lcss_scb_numba(x, y, epsilon, w):
         w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
-        wmin = max(0, i-w)
-        wmax = min(leny-1, i+w)
-        for j in range(wmin, wmax+1):
+        wmin = max(0, i - w)
+        wmax = min(leny - 1, i + w)
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
-            
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
 
-def dlcss(x, y, epsilon, constraint=None, w= None):
+
+def dlcss(x, y, epsilon, constraint=None, w=None):
 
     r"""Similar to Derivative Dynamic Time Warping (DDTW), 
     Derivative Longest Common Subsequence (DLCSS) [1]_ enables the comparison of "general shape" 
@@ -1004,6 +1012,7 @@ def dlcss(x, y, epsilon, constraint=None, w= None):
     elif constraint == "Sakoe-Chiba":
         return ddtw_scb(x, y, epsilon, w)
 
+
 def dlcss_n(x, y, epsilon):
     lenx = len(x)
     leny = len(y)
@@ -1012,34 +1021,31 @@ def dlcss_n(x, y, epsilon):
     D = np.zeros((lenx, leny))
     for i in range(lenx):
         wmin = 0
-        wmax = leny-1
-        for j in range(wmin, wmax+1):
+        wmax = leny - 1
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
+
 
 def dlcss_scb(x, y, epsilon, w):
     y = np.squeeze(dev(np.array([y])))
@@ -1050,37 +1056,34 @@ def dlcss_scb(x, y, epsilon, w):
         w = max(lenx, leny)
     D = np.zeros((lenx, leny))
     for i in range(lenx):
-        wmin = max(0, i-w)
-        wmax = min(leny-1, i+w)
-        for j in range(wmin, wmax+1):
+        wmin = max(0, i - w)
+        wmax = min(leny - 1, i + w)
+        for j in range(wmin, wmax + 1):
             if i + j == 0:
-                if abs(x[i]-y[j]) <= epsilon:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
                 else:
                     D[i][j] = 0
-            elif i == 0: 
-                if abs(x[i]-y[j]) <= epsilon:
+            elif i == 0:
+                if abs(x[i] - y[j]) <= epsilon:
                     D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i][j-1]
-            elif j ==0: 
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = 1
-                else: 
-                    D[i][j] =  D[i-1][j]
-            else:
-                if abs(x[i]-y[j]) <= epsilon:
-                    D[i][j] = max(D[i-1][j-1]+1,
-                                  D[i-1][j],
-                                  D[i][j+1])
                 else:
-                    D[i][j] = max(D[i-1][j-1],
-                                  D[i-1][j],
-                                  D[i][j+1])
-    result = D[lenx-1, leny -1]
-    return 1 - result/min(len(x),len(y))
+                    D[i][j] = D[i][j - 1]
+            elif j == 0:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = 1
+                else:
+                    D[i][j] = D[i - 1][j]
+            else:
+                if abs(x[i] - y[j]) <= epsilon:
+                    D[i][j] = max(D[i - 1][j - 1] + 1, D[i - 1][j], D[i][j + 1])
+                else:
+                    D[i][j] = max(D[i - 1][j - 1], D[i - 1][j], D[i][j + 1])
+    result = D[lenx - 1, leny - 1]
+    return 1 - result / min(len(x), len(y))
 
-def lb_keogh_lcss(y, x, epsilon, w = None, fast = True):
+
+def lb_keogh_lcss(y, x, epsilon, w=None, fast=True):
     r"""The LCSS lower bound, LB_Keogh_LCSS [1]_ is adapted from
     LB_Keogh [2]_ and considers the LCSS matching threshold
     :math:`epsilon`in constructing envelopes.
@@ -1141,38 +1144,39 @@ def lb_keogh_lcss(y, x, epsilon, w = None, fast = True):
     if fast == False:
         return lb_keogh_lcss_n(y, x, epsilon, w)
 
+
 def lb_keogh_lcss_n(y, x, epsilon, w):
     leny = len(y)
     if w == None:
         w = leny
     XUE, XLE = make_envelopes(x, w)
-    LE_lower = np.subtract(XLE,epsilon)
-    UE_higher = np.add(XUE,epsilon)
+    LE_lower = np.subtract(XLE, epsilon)
+    UE_higher = np.add(XUE, epsilon)
     sum = 0
     for i in range(leny):
         if y[i] >= LE_lower[i] and y[i] <= UE_higher[i]:
             sum += 1
-    lb_dist = 1 - (sum/(min(len(x),len(y))))
+    lb_dist = 1 - (sum / (min(len(x), len(y))))
     return lb_dist
 
-@jit(nopython = True)
+
+@jit(nopython=True)
 def lb_keogh_lcss_numba(y, x, epsilon, w):
     leny = len(y)
     if w == None:
         w = leny
     XUE, XLE = make_envelopes(x, w)
-    LE_lower = np.subtract(XLE,epsilon)
-    UE_higher = np.add(XUE,epsilon)
+    LE_lower = np.subtract(XLE, epsilon)
+    UE_higher = np.add(XUE, epsilon)
     sum = 0
     for i in range(leny):
         if y[i] >= LE_lower[i] and y[i] <= UE_higher[i]:
             sum += 1
-    lb_dist = 1 - (sum/(min(len(x),len(y))))
+    lb_dist = 1 - (sum / (min(len(x), len(y))))
     return lb_dist
 
 
-
-@jit(nopython = True)
+@jit(nopython=True)
 def glb_lcss(y, x, epsilon, w):
 
     r"""
@@ -1201,30 +1205,32 @@ def glb_lcss(y, x, epsilon, w):
     YUE, YLE = MakeEnvForSingleTS(y, w)
     lenx = len(x)
     leny = len(y)
-    fixed_sum = lcss_subcost(x[0], y[0], epsilon) + lcss_subcost(x[lenx-1], y[leny-1], epsilon)
-    
-    XLE_lower = np.subtract(XLE,epsilon)
-    XUE_higher = np.add(XUE,epsilon)
-    
+    fixed_sum = lcss_subcost(x[0], y[0], epsilon) + lcss_subcost(
+        x[lenx - 1], y[leny - 1], epsilon
+    )
+
+    XLE_lower = np.subtract(XLE, epsilon)
+    XUE_higher = np.add(XUE, epsilon)
+
     y_reward = 0
-    
-    for i in range(1, leny-1):
-    
+
+    for i in range(1, leny - 1):
+
         if y[i] >= XLE_lower[i] and y[i] <= XUE_higher[i]:
             y_reward += 1
-    
-    YLE_lower = np.subtract(YLE,epsilon)
-    YUE_higher = np.add(YUE,epsilon)
+
+    YLE_lower = np.subtract(YLE, epsilon)
+    YUE_higher = np.add(YUE, epsilon)
     x_reward = 0
-   
-    for i in range(1, lenx-1):
-       
+
+    for i in range(1, lenx - 1):
+
         if x[i] >= YLE_lower[i] and x[i] <= YUE_higher[i]:
             x_reward += 1
-    
+
     sum = fixed_sum + min(y_reward, x_reward)
-    lb_dist = 1 - (sum/(min(len(x),len(y))))
-    
+    lb_dist = 1 - (sum / (min(len(x), len(y))))
+
     return lb_dist
 
 
@@ -1232,7 +1238,8 @@ def glb_lcss(y, x, epsilon, w):
 
 # Start of ERP
 
-def erp(x, y, m, constraint=None, w= None, fast = True):
+
+def erp(x, y, m, constraint=None, w=None, fast=True):
 
     r"""
     Edit Distance with Real Penalty (ERP) [1]_ is another edit distance measure that aims to take the advantages of eing a metric (like most $L_{p}$ norm measures) and allowing temporal shifts. 
@@ -1321,21 +1328,24 @@ def erp_n_numba(x, y, m):
 
     for i in range(lenx):
         minw = 0
-        maxw = leny-1
-        
-        for j in range(minw, maxw+1):
+        maxw = leny - 1
+
+        for j in range(minw, maxw + 1):
             if i + j == 0:
                 acc_cost_mat[i, j] = 0
             elif i == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i, j-1] + (y[j]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i, j - 1] + (y[j] - m) ** 2
             elif j == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i-1, j] + (x[i]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i - 1, j] + (x[i] - m) ** 2
             else:
-                acc_cost_mat[i, j] = min(acc_cost_mat[i-1, j-1] + (x[i] - y[j])**2,
-                                         acc_cost_mat[i, j-1] + (y[j] - m)**2,
-                                         acc_cost_mat[i-1, j] + (x[i]-m)**2)
-    
-    return math.sqrt(acc_cost_mat[lenx-1, leny-1])
+                acc_cost_mat[i, j] = min(
+                    acc_cost_mat[i - 1, j - 1] + (x[i] - y[j]) ** 2,
+                    acc_cost_mat[i, j - 1] + (y[j] - m) ** 2,
+                    acc_cost_mat[i - 1, j] + (x[i] - m) ** 2,
+                )
+
+    return math.sqrt(acc_cost_mat[lenx - 1, leny - 1])
+
 
 def erp_n(x, y, m):
     lenx = len(x)
@@ -1345,21 +1355,23 @@ def erp_n(x, y, m):
 
     for i in range(lenx):
         minw = 0
-        maxw = leny-1
-        
-        for j in range(minw, maxw+1):
+        maxw = leny - 1
+
+        for j in range(minw, maxw + 1):
             if i + j == 0:
                 acc_cost_mat[i, j] = 0
             elif i == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i, j-1] + (y[j]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i, j - 1] + (y[j] - m) ** 2
             elif j == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i-1, j] + (x[i]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i - 1, j] + (x[i] - m) ** 2
             else:
-                acc_cost_mat[i, j] = min(acc_cost_mat[i-1, j-1] + (x[i] - y[j])**2,
-                                         acc_cost_mat[i, j-1] + (y[j] - m)**2,
-                                         acc_cost_mat[i-1, j] + (x[i]-m)**2)
-    
-    return math.sqrt(acc_cost_mat[lenx-1, leny-1])
+                acc_cost_mat[i, j] = min(
+                    acc_cost_mat[i - 1, j - 1] + (x[i] - y[j]) ** 2,
+                    acc_cost_mat[i, j - 1] + (y[j] - m) ** 2,
+                    acc_cost_mat[i - 1, j] + (x[i] - m) ** 2,
+                )
+
+    return math.sqrt(acc_cost_mat[lenx - 1, leny - 1])
 
 
 def erp_scb(x, y, m, w):
@@ -1373,27 +1385,30 @@ def erp_scb(x, y, m, w):
 
     for i in range(lenx):
         minw = max(0, i - w)
-        maxw = min(leny-1, i + w)
-        
-        for j in range(minw, maxw+1):
+        maxw = min(leny - 1, i + w)
+
+        for j in range(minw, maxw + 1):
             if i + j == 0:
                 acc_cost_mat[i, j] = 0
             elif i == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i, j-1] + (y[j]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i, j - 1] + (y[j] - m) ** 2
             elif j == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i-1, j] + (x[i]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i - 1, j] + (x[i] - m) ** 2
             else:
-                acc_cost_mat[i, j] = min(acc_cost_mat[i-1, j-1] + (x[i] - y[j])**2,
-                                         acc_cost_mat[i, j-1] + (y[j] - m)**2,
-                                         acc_cost_mat[i-1, j] + (x[i]-m)**2)
-    
-    return math.sqrt(acc_cost_mat[lenx-1, leny-1])
+                acc_cost_mat[i, j] = min(
+                    acc_cost_mat[i - 1, j - 1] + (x[i] - y[j]) ** 2,
+                    acc_cost_mat[i, j - 1] + (y[j] - m) ** 2,
+                    acc_cost_mat[i - 1, j] + (x[i] - m) ** 2,
+                )
+
+    return math.sqrt(acc_cost_mat[lenx - 1, leny - 1])
+
 
 @jit(nopython=True)
 def erp_scb_numba(x, y, m, w):
     lenx = len(x)
     leny = len(y)
-    
+
     if w == None:
         w = max(lenx, leny)
 
@@ -1401,25 +1416,26 @@ def erp_scb_numba(x, y, m, w):
 
     for i in range(lenx):
         minw = max(0, i - w)
-        maxw = min(leny-1, i + w)
-        
-        for j in range(minw, maxw+1):
+        maxw = min(leny - 1, i + w)
+
+        for j in range(minw, maxw + 1):
             if i + j == 0:
                 acc_cost_mat[i, j] = 0
             elif i == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i, j-1] + (y[j]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i, j - 1] + (y[j] - m) ** 2
             elif j == 0:
-                acc_cost_mat[i, j] = acc_cost_mat[i-1, j] + (x[i]-m)**2
+                acc_cost_mat[i, j] = acc_cost_mat[i - 1, j] + (x[i] - m) ** 2
             else:
-                acc_cost_mat[i, j] = min(acc_cost_mat[i-1, j-1] + (x[i] - y[j])**2,
-                                         acc_cost_mat[i, j-1] + (y[j] - m)**2,
-                                         acc_cost_mat[i-1, j] + (x[i]-m)**2)
-    
-    return math.sqrt(acc_cost_mat[lenx-1, leny-1])
+                acc_cost_mat[i, j] = min(
+                    acc_cost_mat[i - 1, j - 1] + (x[i] - y[j]) ** 2,
+                    acc_cost_mat[i, j - 1] + (y[j] - m) ** 2,
+                    acc_cost_mat[i - 1, j] + (x[i] - m) ** 2,
+                )
+
+    return math.sqrt(acc_cost_mat[lenx - 1, leny - 1])
 
 
-
-def lb_erp(x, y, fast = True):
+def lb_erp(x, y, fast=True):
     r"""LB_ERP [1]_ is a ERP lower bound that utilizes the triangular inequality, 
     formally defined as:
 
@@ -1470,15 +1486,17 @@ def lb_erp(x, y, fast = True):
     if fast == False:
         return lb_erp_n(x, y)
 
-def lb_erp_n(x, y): # LB_ERP
-    return abs(np.sum(x) - np.sum(y))
 
-@jit(nopython = True)
-def lb_erp_numba(x, y): # LB_ERP
+def lb_erp_n(x, y):  # LB_ERP
     return abs(np.sum(x) - np.sum(y))
 
 
-def lb_keogh_erp(y, x, m, w = None, fast = True):
+@jit(nopython=True)
+def lb_erp_numba(x, y):  # LB_ERP
+    return abs(np.sum(x) - np.sum(y))
+
+
+def lb_keogh_erp(y, x, m, w=None, fast=True):
 
     r"""LB_Keogh_ERP [1]_ is a ERP lower bound adapted from LB_Keogh for DTW.
     LB_Keogh_ERP is formally defined as:
@@ -1544,15 +1562,15 @@ def lb_keogh_erp(y, x, m, w = None, fast = True):
     if fast == False:
         return lb_keogh_erp_n(y, x, m, w)
 
+
 def lb_keogh_erp_n(y, x, m, w):
     leny = len(y)
     lenx = len(x)
 
     if w == None:
         w = max(lenx, leny)
-    
+
     XUE, XLE = make_envelopes(x, w)
-    
 
     lb_dist = 0
     for i in range(leny):
@@ -1566,16 +1584,17 @@ def lb_keogh_erp_n(y, x, m, w):
 
     return math.sqrt(lb_dist)
 
-@jit(nopython = True)
+
+@jit(nopython=True)
 def lb_keogh_erp_numba(y, x, m, w):
     leny = len(y)
     lenx = len(x)
 
     if w == None:
         w = max(lenx, leny)
-    
+
     XUE, XLE = make_envelopes(x, w)
-    
+
     lb_dist = 0
     for i in range(leny):
         UE = max(m, XUE[i])
@@ -1589,7 +1608,7 @@ def lb_keogh_erp_numba(y, x, m, w):
     return math.sqrt(lb_dist)
 
 
-def lb_kim_erp(y, x, m, fast = True):
+def lb_kim_erp(y, x, m, fast=True):
 
     r"""LB_Kim_ERP [1]_ is a ERP lower bound adapted from LB_Kim orginally developed for DTW.
     LB_Kim_ERP is formally defined as:
@@ -1650,29 +1669,35 @@ def lb_kim_erp(y, x, m, fast = True):
     if fast == False:
         return lb_kim_erp_n(y, x, m)
 
-def lb_kim_erp_n(y, x, m): 
+
+def lb_kim_erp_n(y, x, m):
     x_max = max(m, max(x))
     x_min = min(m, min(x))
-    lb_dist = max(abs(x[0]-y[0]),
-                  abs(x[len(x)-1] - y[len(y)-1]),
-                  abs(x_max - max(y)),
-                  abs(x_min - min(y)))
-
-    return lb_dist
-
-@jit(nopython = True)
-def lb_kim_erp_numba(y, x, m): 
-    x_max = max(m, max(x))
-    x_min = min(m, min(x))
-    lb_dist = max(abs(x[0]-y[0]),
-                  abs(x[len(x)-1] - y[len(y)-1]),
-                  abs(x_max - max(y)),
-                  abs(x_min - min(y)))
+    lb_dist = max(
+        abs(x[0] - y[0]),
+        abs(x[len(x) - 1] - y[len(y) - 1]),
+        abs(x_max - max(y)),
+        abs(x_min - min(y)),
+    )
 
     return lb_dist
 
 
-@jit(nopython = True)
+@jit(nopython=True)
+def lb_kim_erp_numba(y, x, m):
+    x_max = max(m, max(x))
+    x_min = min(m, min(x))
+    lb_dist = max(
+        abs(x[0] - y[0]),
+        abs(x[len(x) - 1] - y[len(y) - 1]),
+        abs(x_max - max(y)),
+        abs(x_min - min(y)),
+    )
+
+    return lb_dist
+
+
+@jit(nopython=True)
 def glb_erp(y, x, m, w):
 
     r"""
@@ -1698,37 +1723,39 @@ def glb_erp(y, x, m, w):
     """
 
     XUE, XLE = MakeEnvForSingleTS(x, w)
-    YUE, YLE = MakeEnvForSingleTS(y, w) 
+    YUE, YLE = MakeEnvForSingleTS(y, w)
     lenx = len(x)
     leny = len(y)
-    
-    fixed_dist = min((x[lenx-1] - y[leny-1])**2, (x[lenx-1]-m)**2, (y[leny-1]- m)**2)
+
+    fixed_dist = min(
+        (x[lenx - 1] - y[leny - 1]) ** 2, (x[lenx - 1] - m) ** 2, (y[leny - 1] - m) ** 2
+    )
 
     y_dist = 0
-    for i in range(1, leny-1):
+    for i in range(1, leny - 1):
 
-    
         if y[i] > XUE[i]:
-            y_dist += min((y[i]-XUE[i])**2, (y[i]-m)**2)
+            y_dist += min((y[i] - XUE[i]) ** 2, (y[i] - m) ** 2)
         elif y[i] < XLE[i]:
-            y_dist += min((y[i]-XLE[i])**2, (y[i]-m)**2)
-    
+            y_dist += min((y[i] - XLE[i]) ** 2, (y[i] - m) ** 2)
+
     x_dist = 0
-    for i in range(1, lenx-1):
+    for i in range(1, lenx - 1):
 
         if x[i] > YUE[i]:
-            x_dist += min((x[i]-YUE[i])**2, (x[i]-m)**2)
+            x_dist += min((x[i] - YUE[i]) ** 2, (x[i] - m) ** 2)
         elif x[i] < YLE[i]:
-            x_dist += min((x[i]-YLE[i])**2, (x[i]-m)**2)
+            x_dist += min((x[i] - YLE[i]) ** 2, (x[i] - m) ** 2)
 
     lb_dist = fixed_dist + max(x_dist, y_dist)
-    
+
     return sqrt(lb_dist)
+
 
 # End of ERP
 
 # Start of EDR
-def edr(x, y, m=0, constraint=None, w=100, fast = True):
+def edr(x, y, m=0, constraint=None, w=100, fast=True):
 
     r"""
     Edit Distance on Real Sequences (EDR) [1]_ is an edit-based elastic measure. 
@@ -1806,11 +1833,11 @@ def edr_n(x, y, m):
 
     for i in range(len(x)):
         minw = 0
-        maxw = len(y)-1
+        maxw = len(y) - 1
         prev = cur
         cur = np.full((1, len(y)), -np.inf)
 
-        for j in range(int(minw), int(maxw)+1):
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -1835,11 +1862,11 @@ def edr_n_numba(x, y, m):
 
     for i in range(len(x)):
         minw = 0
-        maxw = len(y)-1
+        maxw = len(y) - 1
         prev = cur
         cur = np.full((1, len(y)), -np.inf)
 
-        for j in range(int(minw), int(maxw)+1):
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -1856,6 +1883,7 @@ def edr_n_numba(x, y, m):
 
     return 0 - cur[len(y) - 1]
 
+
 def edr_scb(x, y, m, w):
     lenx = len(x)
     leny = len(y)
@@ -1868,11 +1896,11 @@ def edr_scb(x, y, m, w):
 
     for i in range(lenx):
         minw = max(0, i - w)
-        maxw = min(len(y)-1, i + w)
+        maxw = min(len(y) - 1, i + w)
         prev = cur
         cur = np.full((1, leny), -np.inf)
 
-        for j in range(int(minw), int(maxw)+1):
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -1903,11 +1931,11 @@ def edr_scb_numba(x, y, m, w):
 
     for i in range(lenx):
         minw = max(0, i - w)
-        maxw = min(len(y)-1, i + w)
+        maxw = min(len(y) - 1, i + w)
         prev = cur
         cur = np.full((1, leny), -np.inf)
 
-        for j in range(int(minw), int(maxw)+1):
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -1925,7 +1953,7 @@ def edr_scb_numba(x, y, m, w):
     return 0 - cur[len(y) - 1]
 
 
-@jit(nopython = True)
+@jit(nopython=True)
 def glb_edr(x, y, epsilon, w):
 
     r"""
@@ -1949,20 +1977,20 @@ def glb_edr(x, y, epsilon, w):
            elastic measures: A study and new generalization of lower bounding distances. Proceedings of
            the VLDB Endowment, 16(8), 2019–2032.
     """
-    
+
     XUE, XLE = MakeEnvForSingleTS(x, w)
     YUE, YLE = MakeEnvForSingleTS(y, w)
     lenx = len(x)
     leny = len(y)
-    fixed_cost = 0 + min(edr_subcost(x[lenx-1], y[leny-1], epsilon), 1)
+    fixed_cost = 0 + min(edr_subcost(x[lenx - 1], y[leny - 1], epsilon), 1)
     y_dist = 0
-    for i in range(1, leny-1):
+    for i in range(1, leny - 1):
         if y[i] > XUE[i]:
             y_dist += edr_subcost(y[i], XUE[i], epsilon)
         if y[i] < XLE[i]:
             y_dist += edr_subcost(y[i], XLE[i], epsilon)
     x_dist = 0
-    for i in range(1, lenx-1):
+    for i in range(1, lenx - 1):
         if x[i] > YUE[i]:
             x_dist += edr_subcost(x[i], YUE[i], epsilon)
         if x[i] < YLE[i]:
@@ -1972,14 +2000,16 @@ def glb_edr(x, y, epsilon, w):
 
     return lb_dist
 
+
 # Start of TWED
+
 
 @jit(nopython=True)
 def dist(x, y):
     return (x - y) ** 2
 
 
-def twed(x, timesx, y, timesy, lamb, nu, constraint=None, w= None, fast = True):
+def twed(x, timesx, y, timesy, lamb, nu, constraint=None, w=None, fast=True):
 
     r"""
     Time Warp Edit Distance (TWED) [1]_ is an elastic measure 
@@ -2061,7 +2091,7 @@ def twed(x, timesx, y, timesy, lamb, nu, constraint=None, w= None, fast = True):
 
 
 @jit(nopython=True)
-def twed_n_numba(x,timesx, y, timesy, lamb, nu):
+def twed_n_numba(x, timesx, y, timesy, lamb, nu):
     xlen = len(x)
     ylen = len(y)
     cur = np.full(ylen, np.inf)
@@ -2070,25 +2100,52 @@ def twed_n_numba(x,timesx, y, timesy, lamb, nu):
         prev = cur
         cur = np.full(ylen, np.inf)
         minw = 0
-        maxw = ylen-1
-        for j in range(minw, maxw+1):
+        maxw = ylen - 1
+        for j in range(minw, maxw + 1):
             if i + j == 0:
-                cur[j] = (x[i] - y[j]) **2
+                cur[j] = (x[i] - y[j]) ** 2
             elif i == 0:
-                c1 = (cur[j - 1]+ (y[j - 1] - y[j]) **2 + nu * (timesy[j] - timesy[j - 1])+ lamb)
+                c1 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
                 cur[j] = c1
             elif j == 0:
-                c1 = (prev[j]+ (x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
                 cur[j] = c1
             else:
-                c1 = (prev[j]+(x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
-                c2 = (cur[j - 1]+ (y[j - 1] - y[j])**2+ nu * (timesy[j] - timesy[j - 1])+ lamb)
-                c3 = (prev[j - 1]+ (x[i] - y[j]) ** 2+ (x[i - 1]- y[j - 1]) ** 2+ nu* (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1])))
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
+                c2 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
+                c3 = (
+                    prev[j - 1]
+                    + (x[i] - y[j]) ** 2
+                    + (x[i - 1] - y[j - 1]) ** 2
+                    + nu
+                    * (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1]))
+                )
                 cur[j] = min(c1, c2, c3)
 
     return cur[ylen - 1]
 
-def twed_n(x,timesx, y, timesy, lamb, nu):
+
+def twed_n(x, timesx, y, timesy, lamb, nu):
     xlen = len(x)
     ylen = len(y)
     cur = np.full(ylen, np.inf)
@@ -2097,27 +2154,53 @@ def twed_n(x,timesx, y, timesy, lamb, nu):
         prev = cur
         cur = np.full(ylen, np.inf)
         minw = 0
-        maxw = ylen-1
-        for j in range(minw, maxw+1):
+        maxw = ylen - 1
+        for j in range(minw, maxw + 1):
             if i + j == 0:
-                cur[j] = (x[i] - y[j]) **2
+                cur[j] = (x[i] - y[j]) ** 2
             elif i == 0:
-                c1 = (cur[j - 1]+ (y[j - 1] - y[j]) **2 + nu * (timesy[j] - timesy[j - 1])+ lamb)
+                c1 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
                 cur[j] = c1
             elif j == 0:
-                c1 = (prev[j]+ (x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
                 cur[j] = c1
             else:
-                c1 = (prev[j]+(x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
-                c2 = (cur[j - 1]+ (y[j - 1] - y[j])**2+ nu * (timesy[j] - timesy[j - 1])+ lamb)
-                c3 = (prev[j - 1]+ (x[i] - y[j]) ** 2+ (x[i - 1]- y[j - 1]) ** 2+ nu* (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1])))
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
+                c2 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
+                c3 = (
+                    prev[j - 1]
+                    + (x[i] - y[j]) ** 2
+                    + (x[i - 1] - y[j - 1]) ** 2
+                    + nu
+                    * (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1]))
+                )
                 cur[j] = min(c1, c2, c3)
 
     return cur[ylen - 1]
-    
+
 
 @jit(nopython=True)
-def twed_scb_numba(x,timesx, y, timesy, lamb, nu, w=None):
+def twed_scb_numba(x, timesx, y, timesy, lamb, nu, w=None):
     xlen = len(x)
     ylen = len(y)
     if w == None:
@@ -2128,26 +2211,52 @@ def twed_scb_numba(x,timesx, y, timesy, lamb, nu, w=None):
         prev = cur
         cur = np.full(ylen, np.inf)
         minw = max(0, i - w)
-        maxw = min(ylen-1, i + w)
-        for j in range(minw, maxw+1):
+        maxw = min(ylen - 1, i + w)
+        for j in range(minw, maxw + 1):
             if i + j == 0:
-                cur[j] = (x[i] - y[j]) **2
+                cur[j] = (x[i] - y[j]) ** 2
             elif i == 0:
-                c1 = (cur[j - 1]+ (y[j - 1] - y[j]) **2 + nu * (timesy[j] - timesy[j - 1])+ lamb)
+                c1 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
                 cur[j] = c1
             elif j == 0:
-                c1 = (prev[j]+ (x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
                 cur[j] = c1
             else:
-                c1 = (prev[j]+(x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
-                c2 = (cur[j - 1]+ (y[j - 1] - y[j])**2+ nu * (timesy[j] - timesy[j - 1])+ lamb)
-                c3 = (prev[j - 1]+ (x[i] - y[j]) ** 2+ (x[i - 1]- y[j - 1]) ** 2+ nu* (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1])))
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
+                c2 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
+                c3 = (
+                    prev[j - 1]
+                    + (x[i] - y[j]) ** 2
+                    + (x[i - 1] - y[j - 1]) ** 2
+                    + nu
+                    * (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1]))
+                )
                 cur[j] = min(c1, c2, c3)
 
     return cur[ylen - 1]
 
 
-def twed_scb(x,timesx, y, timesy, lamb, nu, w=None):
+def twed_scb(x, timesx, y, timesy, lamb, nu, w=None):
     xlen = len(x)
     ylen = len(y)
     if w == None:
@@ -2158,26 +2267,52 @@ def twed_scb(x,timesx, y, timesy, lamb, nu, w=None):
         prev = cur
         cur = np.full(ylen, np.inf)
         minw = max(0, i - w)
-        maxw = min(ylen-1, i + w)
-        for j in range(minw, maxw+1):
+        maxw = min(ylen - 1, i + w)
+        for j in range(minw, maxw + 1):
             if i + j == 0:
-                cur[j] = (x[i] - y[j]) **2
+                cur[j] = (x[i] - y[j]) ** 2
             elif i == 0:
-                c1 = (cur[j - 1]+ (y[j - 1] - y[j]) **2 + nu * (timesy[j] - timesy[j - 1])+ lamb)
+                c1 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
                 cur[j] = c1
             elif j == 0:
-                c1 = (prev[j]+ (x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
                 cur[j] = c1
             else:
-                c1 = (prev[j]+(x[i - 1] - x[i]) **2+ nu * (timesx[i] - timesx[i - 1])+ lamb)
-                c2 = (cur[j - 1]+ (y[j - 1] - y[j])**2+ nu * (timesy[j] - timesy[j - 1])+ lamb)
-                c3 = (prev[j - 1]+ (x[i] - y[j]) ** 2+ (x[i - 1]- y[j - 1]) ** 2+ nu* (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1])))
+                c1 = (
+                    prev[j]
+                    + (x[i - 1] - x[i]) ** 2
+                    + nu * (timesx[i] - timesx[i - 1])
+                    + lamb
+                )
+                c2 = (
+                    cur[j - 1]
+                    + (y[j - 1] - y[j]) ** 2
+                    + nu * (timesy[j] - timesy[j - 1])
+                    + lamb
+                )
+                c3 = (
+                    prev[j - 1]
+                    + (x[i] - y[j]) ** 2
+                    + (x[i - 1] - y[j - 1]) ** 2
+                    + nu
+                    * (abs(timesx[i] - timesy[j]) + abs(timesx[i - 1] - timesy[j - 1]))
+                )
                 cur[j] = min(c1, c2, c3)
 
     return cur[ylen - 1]
 
 
-def lb_twed(y, x, lamb, nu, w = None, fast = True):
+def lb_twed(y, x, lamb, nu, w=None, fast=True):
     r"""LB_TWED is an TWED lower bound which constructs upper and lower envelopes, 
     formally defined as:
 
@@ -2246,6 +2381,7 @@ def lb_twed(y, x, lamb, nu, w = None, fast = True):
     if fast == False:
         return lb_twed_n(y, x, lamb, nu, w)
 
+
 def lb_twed_n(y, x, lamb, nu, w):
     lenx = len(x)
     leny = len(y)
@@ -2255,18 +2391,19 @@ def lb_twed_n(y, x, lamb, nu, w):
 
     XUE, XLE = make_envelopes(x, w)
 
-    lb_dist = min((x[0] - y[0])**2, (x[0])**2 + nu + lamb, (y[0])**2 + nu + lamb)
+    lb_dist = min((x[0] - y[0]) ** 2, (x[0]) ** 2 + nu + lamb, (y[0]) ** 2 + nu + lamb)
 
     for i in range(1, leny):
 
-        if y[i] > max(XUE[i], y[i-1]):
-            lb_dist += min(nu, (y[i]- max(XUE[i], y[i-1]))**2)
-        if y[i] < min(XLE[i], y[i-1]):
-            lb_dist += min(nu, (y[i]- min(XLE[i], y[i-1]))**2)
-        
+        if y[i] > max(XUE[i], y[i - 1]):
+            lb_dist += min(nu, (y[i] - max(XUE[i], y[i - 1])) ** 2)
+        if y[i] < min(XLE[i], y[i - 1]):
+            lb_dist += min(nu, (y[i] - min(XLE[i], y[i - 1])) ** 2)
+
     return lb_dist
 
-@jit(nopython = True)
+
+@jit(nopython=True)
 def lb_twed_numba(y, x, lamb, nu, w):
 
     lenx = len(x)
@@ -2277,20 +2414,19 @@ def lb_twed_numba(y, x, lamb, nu, w):
 
     XUE, XLE = make_envelopes(x, w)
 
-    lb_dist = min((x[0] - y[0])**2, (x[0])**2 + nu + lamb, (y[0])**2 + nu + lamb)
+    lb_dist = min((x[0] - y[0]) ** 2, (x[0]) ** 2 + nu + lamb, (y[0]) ** 2 + nu + lamb)
 
     for i in range(1, leny):
 
-        if y[i] > max(XUE[i], y[i-1]):
-            lb_dist += min(nu, (y[i]- max(XUE[i], y[i-1]))**2)
-        if y[i] < min(XLE[i], y[i-1]):
-            lb_dist += min(nu, (y[i]- min(XLE[i], y[i-1]))**2)
-        
+        if y[i] > max(XUE[i], y[i - 1]):
+            lb_dist += min(nu, (y[i] - max(XUE[i], y[i - 1])) ** 2)
+        if y[i] < min(XLE[i], y[i - 1]):
+            lb_dist += min(nu, (y[i] - min(XLE[i], y[i - 1])) ** 2)
+
     return lb_dist
 
 
-
-@jit(nopython = True)
+@jit(nopython=True)
 def glb_twed(x, y, lamb, w):
 
     r"""
@@ -2321,28 +2457,37 @@ def glb_twed(x, y, lamb, w):
     leny = len(y)
     lenx = len(x)
 
-    fixed_dist = abs(x[0]-y[0]) + min(
-                                    abs(x[lenx-1]-y[leny-1]),
-                                    abs(y[lenx-1]-y[lenx-2])+lamb,
-                                    abs(x[lenx-1]-x[lenx-2])+lamb
-                                    )
+    fixed_dist = abs(x[0] - y[0]) + min(
+        abs(x[lenx - 1] - y[leny - 1]),
+        abs(y[lenx - 1] - y[lenx - 2]) + lamb,
+        abs(x[lenx - 1] - x[lenx - 2]) + lamb,
+    )
 
-    
     y_dist = 0
-    for i in range(1, leny-1):
+    for i in range(1, leny - 1):
 
-        if y[i]>=XUE[i] and y[i-1]>=XUE[i]:
-            y_dist += min((abs(y[i]-XUE[i]) + abs(y[i-1]-XUE[i])), (abs(y[i]-y[i-1])+lamb))
-        if y[i]<=XLE[i] and y[i-1]<=XLE[i]:
-            y_dist += min(abs(y[i]-XLE[i]) + abs(y[i-1]-XLE[i]), abs(y[i]-y[i-1])+lamb)
+        if y[i] >= XUE[i] and y[i - 1] >= XUE[i]:
+            y_dist += min(
+                (abs(y[i] - XUE[i]) + abs(y[i - 1] - XUE[i])),
+                (abs(y[i] - y[i - 1]) + lamb),
+            )
+        if y[i] <= XLE[i] and y[i - 1] <= XLE[i]:
+            y_dist += min(
+                abs(y[i] - XLE[i]) + abs(y[i - 1] - XLE[i]), abs(y[i] - y[i - 1]) + lamb
+            )
 
     x_dist = 0
-    for i in range(1, lenx-1):
+    for i in range(1, lenx - 1):
 
-        if x[i]>=YUE[i] and x[i-1]>=YUE[i]:
-            x_dist += min((abs(x[i]-YUE[i]) + abs(x[i-1]-YUE[i])), (abs(x[i]-y[i-1])+lamb))
-        if y[i]<=YLE[i] and y[i-1]<=YLE[i]:
-            x_dist += min(abs(x[i]-YLE[i]) + abs(x[i-1]-YLE[i]), abs(x[i]-x[i-1])+lamb)
+        if x[i] >= YUE[i] and x[i - 1] >= YUE[i]:
+            x_dist += min(
+                (abs(x[i] - YUE[i]) + abs(x[i - 1] - YUE[i])),
+                (abs(x[i] - y[i - 1]) + lamb),
+            )
+        if y[i] <= YLE[i] and y[i - 1] <= YLE[i]:
+            x_dist += min(
+                abs(x[i] - YLE[i]) + abs(x[i - 1] - YLE[i]), abs(x[i] - x[i - 1]) + lamb
+            )
 
     lb_dist = fixed_dist + max(y_dist, x_dist)
 
@@ -2352,7 +2497,7 @@ def glb_twed(x, y, lamb, w):
 # End of TWED
 
 # Start of MSM
-def msm(x,y,c,constraint=None,w=None, fast = True):
+def msm(x, y, c, constraint=None, w=None, fast=True):
 
     r"""Move-Split-Merge (MSM) [1]_ is an edit distance measure that deconstructs the popular editing operations (insert, delete, and substitute);
     instead it proposes sub-operations that have can be used in conjunctions to replicate the original operations. 
@@ -2421,53 +2566,60 @@ def msm(x,y,c,constraint=None,w=None, fast = True):
 
     .. [1] Alexandra  Stefan,  Vassilis  Athitsos,  and  Gautam  Das.  “The  Move-Split-Merge Metric for Time Series”. In:IEEE Transactions on Knowledge andData Engineering25.1425 – 1438 (2013).
     """
-    
+
     if constraint == "None":
         if fast == True:
-            return msm_n_numba(x,y,c)
+            return msm_n_numba(x, y, c)
         if fast == False:
-            return msm_n(x,y,c)
+            return msm_n(x, y, c)
     elif constraint == "Sakoe-Chiba":
         if fast == True:
-            return msm_scb_numba(x,y,c,w)
+            return msm_scb_numba(x, y, c, w)
         if fast == False:
-            return msm_scb(x,y,c,w)
+            return msm_scb(x, y, c, w)
+
 
 @jit(nopython=True)
-def msm_n_numba(x,y,c):
+def msm_n_numba(x, y, c):
     xlen = len(x)
     ylen = len(y)
     cost = np.full((xlen, ylen), np.inf)
     cost[0][0] = abs(x[0] - y[0])
-    for i in range(1,len(x)):
-        cost[i][0] = cost[i-1][0] + msm_dist(x[i],x[i-1],y[0],c)
-    for i in range(1,len(y)):
-        cost[0][i] = cost[0][i-1] + msm_dist(y[i], x[0],y[i-1],c)
-    for i in range(1,xlen):
+    for i in range(1, len(x)):
+        cost[i][0] = cost[i - 1][0] + msm_dist(x[i], x[i - 1], y[0], c)
+    for i in range(1, len(y)):
+        cost[0][i] = cost[0][i - 1] + msm_dist(y[i], x[0], y[i - 1], c)
+    for i in range(1, xlen):
         for j in range(0, ylen):
-            cost[i][j] = min(cost[i-1][j-1] + abs(x[i] - y[j]),
-                            cost[i-1][j] + msm_dist(x[i], x[i -1],y[j],c),
-                            cost[i][j-1] + msm_dist(y[j], x[i], y[j-1],c))
-    return cost[xlen-1][ylen-1]
+            cost[i][j] = min(
+                cost[i - 1][j - 1] + abs(x[i] - y[j]),
+                cost[i - 1][j] + msm_dist(x[i], x[i - 1], y[j], c),
+                cost[i][j - 1] + msm_dist(y[j], x[i], y[j - 1], c),
+            )
+    return cost[xlen - 1][ylen - 1]
 
-def msm_n(x,y,c):
+
+def msm_n(x, y, c):
     xlen = len(x)
     ylen = len(y)
     cost = np.full((xlen, ylen), np.inf)
     cost[0][0] = abs(x[0] - y[0])
-    for i in range(1,len(x)):
-        cost[i][0] = cost[i-1][0] + msm_dist(x[i],x[i-1],y[0],c)
-    for i in range(1,len(y)):
-        cost[0][i] = cost[0][i-1] + msm_dist(y[i], x[0],y[i-1],c)
-    for i in range(1,xlen):
+    for i in range(1, len(x)):
+        cost[i][0] = cost[i - 1][0] + msm_dist(x[i], x[i - 1], y[0], c)
+    for i in range(1, len(y)):
+        cost[0][i] = cost[0][i - 1] + msm_dist(y[i], x[0], y[i - 1], c)
+    for i in range(1, xlen):
         for j in range(0, ylen):
-            cost[i][j] = min(cost[i-1][j-1] + abs(x[i] - y[j]),
-                            cost[i-1][j] + msm_dist(x[i], x[i -1],y[j],c),
-                            cost[i][j-1] + msm_dist(y[j], x[i], y[j-1],c))
-    return cost[xlen-1][ylen-1]
+            cost[i][j] = min(
+                cost[i - 1][j - 1] + abs(x[i] - y[j]),
+                cost[i - 1][j] + msm_dist(x[i], x[i - 1], y[j], c),
+                cost[i][j - 1] + msm_dist(y[j], x[i], y[j - 1], c),
+            )
+    return cost[xlen - 1][ylen - 1]
+
 
 @jit(nopython=True)
-def msm_scb_numba(x,y,c,w):
+def msm_scb_numba(x, y, c, w):
     xlen = len(x)
     ylen = len(y)
     if w == None:
@@ -2475,22 +2627,24 @@ def msm_scb_numba(x,y,c,w):
     cost = np.full((xlen, ylen), np.inf)
     cost[0][0] = abs(x[0] - y[0])
 
-    for i in range(1,len(x)):
-        cost[i][0] = cost[i-1][0] + msm_dist(x[i],x[i-1],y[0],c)
+    for i in range(1, len(x)):
+        cost[i][0] = cost[i - 1][0] + msm_dist(x[i], x[i - 1], y[0], c)
 
-    for i in range(1,len(y)):
-        cost[0][i] = cost[0][i-1] + msm_dist(y[i], x[0],y[i-1],c)
+    for i in range(1, len(y)):
+        cost[0][i] = cost[0][i - 1] + msm_dist(y[i], x[0], y[i - 1], c)
 
-    for i in range(1,xlen):
-        for j in range(max(0, int(i-w)), min(ylen, int(i+w))):
-            cost[i][j] = min(cost[i-1][j-1] + abs(x[i] - y[j]),
-                            cost[i-1][j] + msm_dist(x[i], x[i -1],y[j],c),
-                            cost[i][j-1] + msm_dist(y[j], x[i], y[j-1],c))
+    for i in range(1, xlen):
+        for j in range(max(0, int(i - w)), min(ylen, int(i + w))):
+            cost[i][j] = min(
+                cost[i - 1][j - 1] + abs(x[i] - y[j]),
+                cost[i - 1][j] + msm_dist(x[i], x[i - 1], y[j], c),
+                cost[i][j - 1] + msm_dist(y[j], x[i], y[j - 1], c),
+            )
 
-    return cost[xlen-1][ylen-1]
+    return cost[xlen - 1][ylen - 1]
 
 
-def msm_scb(x,y,c,w):
+def msm_scb(x, y, c, w):
     xlen = len(x)
     ylen = len(y)
     if w == None:
@@ -2499,22 +2653,25 @@ def msm_scb(x,y,c,w):
 
     cost[0][0] = abs(x[0] - y[0])
 
-    for i in range(1,len(x)):
-        cost[i][0] = cost[i-1][0] + msm_dist(x[i],x[i-1],y[0],c)
+    for i in range(1, len(x)):
+        cost[i][0] = cost[i - 1][0] + msm_dist(x[i], x[i - 1], y[0], c)
 
-    for i in range(1,len(y)):
-        cost[0][i] = cost[0][i-1] + msm_dist(y[i], x[0],y[i-1],c)
+    for i in range(1, len(y)):
+        cost[0][i] = cost[0][i - 1] + msm_dist(y[i], x[0], y[i - 1], c)
 
-    for i in range(1,xlen):
-        for j in range(max(0, int(i-w)), min(ylen, int(i+w))):
-            cost[i][j] = min(cost[i-1][j-1] + abs(x[i] - y[j]),
-                            cost[i-1][j] + msm_dist(x[i], x[i -1],y[j],c),
-                            cost[i][j-1] + msm_dist(y[j], x[i], y[j-1],c))
+    for i in range(1, xlen):
+        for j in range(max(0, int(i - w)), min(ylen, int(i + w))):
+            cost[i][j] = min(
+                cost[i - 1][j - 1] + abs(x[i] - y[j]),
+                cost[i - 1][j] + msm_dist(x[i], x[i - 1], y[j], c),
+                cost[i][j - 1] + msm_dist(y[j], x[i], y[j - 1], c),
+            )
 
-    return cost[xlen-1][ylen-1]
+    return cost[xlen - 1][ylen - 1]
 
-def lb_msm(y, x, c, w = None, fast = True):
-    
+
+def lb_msm(y, x, c, w=None, fast=True):
+
     r"""LB_MSM is an MSM lower bound which constructs upper and lower envelopes, 
     formally defined as:
 
@@ -2569,36 +2726,36 @@ def lb_msm(y, x, c, w = None, fast = True):
            Ensembles of Elastic Distances for time series classification. Data Mining and
            Knowledge Discovery 34, 1 (2020), 231–272.
     """
-    
+
     if fast == True:
         return lb_msm_numba(y, x, c, w)
     if fast == False:
         return lb_msm_n(y, x, c, w)
 
 
-def lb_msm_n(y, x, c, w = None):
+def lb_msm_n(y, x, c, w=None):
 
     lenx = len(x)
     leny = len(y)
 
     if w == None:
         w = max(lenx, leny)
-    
+
     XUE, XLE = make_envelopes(x, w)
-    
-    lb_dist = abs(x[0]-y[0])
 
-    for i in range(1,leny):
+    lb_dist = abs(x[0] - y[0])
 
-        if y[i] > XUE[i] and y[i-1] >= y[i]:
-            lb_dist += min(abs(y[i]-XUE[i]), c)
-        if y[i] < XLE[i] and y[i-1] <= y[i]:
-            lb_dist += min(abs(y[i]-XLE[i]), c)
-    
+    for i in range(1, leny):
+
+        if y[i] > XUE[i] and y[i - 1] >= y[i]:
+            lb_dist += min(abs(y[i] - XUE[i]), c)
+        if y[i] < XLE[i] and y[i - 1] <= y[i]:
+            lb_dist += min(abs(y[i] - XLE[i]), c)
+
     return lb_dist
 
 
-@jit(nopython = True)
+@jit(nopython=True)
 def glb_msm(x, y, c, w):
 
     r"""
@@ -2627,63 +2784,69 @@ def glb_msm(x, y, c, w):
     YUE, YLE = MakeEnvForSingleTS(y, w)
     leny = len(y)
     lenx = len(x)
-    
 
-    if y[leny-2]>=y[leny-1]>=x[lenx-1] or y[leny-2]<=y[leny-1]<=x[lenx-1] or x[lenx-2]<=x[lenx-1]<=y[leny-1] or x[lenx-2]>=x[lenx-1]>=y[leny-1]:
-        fixed_dist = abs(x[0]-y[0]) + min(abs(x[lenx-1]-y[leny-1]), c)
+    if (
+        y[leny - 2] >= y[leny - 1] >= x[lenx - 1]
+        or y[leny - 2] <= y[leny - 1] <= x[lenx - 1]
+        or x[lenx - 2] <= x[lenx - 1] <= y[leny - 1]
+        or x[lenx - 2] >= x[lenx - 1] >= y[leny - 1]
+    ):
+        fixed_dist = abs(x[0] - y[0]) + min(abs(x[lenx - 1] - y[leny - 1]), c)
     else:
-        fixed_dist = abs(x[0]-y[0]) + min(
-                                        abs(x[lenx-1]-y[leny-1]),
-                                        c + abs(y[leny-1] - y[leny-2]),
-                                        c + abs(x[lenx-1] - x[lenx-2]))
+        fixed_dist = abs(x[0] - y[0]) + min(
+            abs(x[lenx - 1] - y[leny - 1]),
+            c + abs(y[leny - 1] - y[leny - 2]),
+            c + abs(x[lenx - 1] - x[lenx - 2]),
+        )
 
     y_dist = 0
-    for i in range(1, leny-1):
+    for i in range(1, leny - 1):
 
         if y[i] > XUE[i]:
-            y_dist += min(abs(y[i]-XUE[i]), c)
+            y_dist += min(abs(y[i] - XUE[i]), c)
         if y[i] < XLE[i]:
-            y_dist += min(abs(y[i]-XLE[i]), c)
-        
+            y_dist += min(abs(y[i] - XLE[i]), c)
+
     x_dist = 0
-    for i in range(1, lenx-1):
+    for i in range(1, lenx - 1):
 
         if x[i] > YUE[i]:
-            x_dist += min(abs(x[i]-YUE[i]), c)
+            x_dist += min(abs(x[i] - YUE[i]), c)
         if x[i] < YLE[i]:
-            x_dist += min(abs(x[i]-YLE[i]), c)
+            x_dist += min(abs(x[i] - YLE[i]), c)
 
     lb_dist = fixed_dist + max(y_dist, x_dist)
 
     return lb_dist
 
 
-@jit(nopython = True)
-def lb_msm_numba(y, x, c, w = None):
+@jit(nopython=True)
+def lb_msm_numba(y, x, c, w=None):
 
     lenx = len(x)
     leny = len(y)
 
     if w == None:
         w = max(lenx, leny)
-    
+
     XUE, XLE = make_envelopes(x, w)
-    
-    lb_dist = abs(x[0]-y[0])
 
-    for i in range(1,leny):
+    lb_dist = abs(x[0] - y[0])
 
-        if y[i] > XUE[i] and y[i-1] >= y[i]:
-            lb_dist += min(abs(y[i]-XUE[i]), c)
-        if y[i] < XLE[i] and y[i-1] <= y[i]:
-            lb_dist += min(abs(y[i]-XLE[i]), c)
-    
+    for i in range(1, leny):
+
+        if y[i] > XUE[i] and y[i - 1] >= y[i]:
+            lb_dist += min(abs(y[i] - XUE[i]), c)
+        if y[i] < XLE[i] and y[i - 1] <= y[i]:
+            lb_dist += min(abs(y[i] - XLE[i]), c)
+
     return lb_dist
+
 
 # End of MSM
 
 # Start of Swale
-def swale(x,y,p,r,epsilon,constraint=None,w=None, fast = True):
+def swale(x, y, p, r, epsilon, constraint=None, w=None, fast=True):
 
     r"""
     Sequence Weighted Alignment (SWALE) [1]_ is an :math:`\epsilon` based distance measure. 
@@ -2754,29 +2917,30 @@ def swale(x,y,p,r,epsilon,constraint=None,w=None, fast = True):
 
     .. [1] Michael D. Morse and Jignesh M. Patel. “An efficient and accurate methodfor  evaluating  time  series  similarity”.  In:Proceedings of the 2007 ACMSIGMOD international conference on Management of data569–580 (2007).
     """
-    
+
     if constraint == "None":
         if fast == True:
-            return swale_n_numba(x,y,p,r,epsilon)
+            return swale_n_numba(x, y, p, r, epsilon)
         if fast == False:
-            return swale_n(x,y,p,r,epsilon)
+            return swale_n(x, y, p, r, epsilon)
     elif constraint == "Sakoe-Chiba":
         if fast == True:
-           return swale_scb_numba(x,y,p,r,epsilon,w)
-           
+            return swale_scb_numba(x, y, p, r, epsilon, w)
+
         if fast == False:
-            return swale_scb(x,y,p,r,epsilon,w)
+            return swale_scb(x, y, p, r, epsilon, w)
+
 
 @jit(nopython=True)
-def swale_n_numba(x,y,p,r,epsilon):
+def swale_n_numba(x, y, p, r, epsilon):
     cur = np.zeros(len(y))
     prev = np.zeros(len(y))
     for i in range(len(x)):
         prev = cur
         cur = np.zeros(len(y))
         minw = 0
-        maxw = len(y)-1
-        for j in range(int(minw),int(maxw)+1):
+        maxw = len(y) - 1
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -2784,21 +2948,22 @@ def swale_n_numba(x,y,p,r,epsilon):
             elif j == minw:
                 cur[j] = i * p
             else:
-                if (abs(x[i] - y[i]) <= epsilon):
-                    cur[j] = prev[j-1] + r
+                if abs(x[i] - y[i]) <= epsilon:
+                    cur[j] = prev[j - 1] + r
                 else:
-                   cur[j] = min(prev[j], cur[j-1]) + p
-    return cur[len(y)-1]
+                    cur[j] = min(prev[j], cur[j - 1]) + p
+    return cur[len(y) - 1]
 
-def swale_n(x,y,p,r,epsilon):
+
+def swale_n(x, y, p, r, epsilon):
     cur = np.zeros(len(y))
     prev = np.zeros(len(y))
     for i in range(len(x)):
         prev = cur
         cur = np.zeros(len(y))
         minw = 0
-        maxw = len(y)-1
-        for j in range(int(minw),int(maxw)+1):
+        maxw = len(y) - 1
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -2806,14 +2971,15 @@ def swale_n(x,y,p,r,epsilon):
             elif j == minw:
                 cur[j] = i * p
             else:
-                if (abs(x[i] - y[i]) <= epsilon):
-                    cur[j] = prev[j-1] + r
+                if abs(x[i] - y[i]) <= epsilon:
+                    cur[j] = prev[j - 1] + r
                 else:
-                   cur[j] = min(prev[j], cur[j-1]) + p
-    return cur[len(y)-1]
+                    cur[j] = min(prev[j], cur[j - 1]) + p
+    return cur[len(y) - 1]
+
 
 @jit(nopython=True)
-def swale_scb_numba(x,y,p,r,epsilon,w):
+def swale_scb_numba(x, y, p, r, epsilon, w):
     lenx = len(x)
     leny = len(y)
     if w == None:
@@ -2825,9 +2991,9 @@ def swale_scb_numba(x,y,p,r,epsilon,w):
     for i in range(lenx):
         prev = cur
         cur = np.zeros(leny)
-        minw = max(0,i-w)
-        maxw = min(i+w,leny-1)
-        for j in range(int(minw),int(maxw)+1):
+        minw = max(0, i - w)
+        maxw = min(i + w, leny - 1)
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -2835,13 +3001,14 @@ def swale_scb_numba(x,y,p,r,epsilon,w):
             elif j == minw:
                 cur[j] = i * p
             else:
-                if (abs(x[i] - y[i]) <= epsilon):
-                    cur[j] = prev[j-1] + r
+                if abs(x[i] - y[i]) <= epsilon:
+                    cur[j] = prev[j - 1] + r
                 else:
-                   cur[j] = min(prev[j], cur[j-1]) + p
-    return cur[leny-1]
+                    cur[j] = min(prev[j], cur[j - 1]) + p
+    return cur[leny - 1]
 
-def swale_scb(x,y,p,r,epsilon,w):
+
+def swale_scb(x, y, p, r, epsilon, w):
     lenx = len(x)
     leny = len(y)
     if w == None:
@@ -2853,9 +3020,9 @@ def swale_scb(x,y,p,r,epsilon,w):
     for i in range(lenx):
         prev = cur
         cur = np.zeros(leny)
-        minw = max(0,i-w)
-        maxw = min(i+w,leny-1)
-        for j in range(int(minw),int(maxw)+1):
+        minw = max(0, i - w)
+        maxw = min(i + w, leny - 1)
+        for j in range(int(minw), int(maxw) + 1):
             if i + j == 0:
                 cur[j] = 0
             elif i == 0:
@@ -2863,15 +3030,15 @@ def swale_scb(x,y,p,r,epsilon,w):
             elif j == minw:
                 cur[j] = i * p
             else:
-                if (abs(x[i] - y[i]) <= epsilon):
-                    cur[j] = prev[j-1] + r
+                if abs(x[i] - y[i]) <= epsilon:
+                    cur[j] = prev[j - 1] + r
                 else:
-                   cur[j] = min(prev[j], cur[j-1]) + p
-    return cur[leny-1]
+                    cur[j] = min(prev[j], cur[j - 1]) + p
+    return cur[leny - 1]
 
 
-@jit(nopython = True)
-def glb_swale(x, y, p, r, epsilon, w): 
+@jit(nopython=True)
+def glb_swale(x, y, p, r, epsilon, w):
     r"""
     The Generalized Lower Bound (GLB) variant for SWALE [1] that achieves high pruning power while caching reusable computations.
     The function can be imported using ``from tsdistance.elastic import glb_swale``.
@@ -2897,25 +3064,25 @@ def glb_swale(x, y, p, r, epsilon, w):
            elastic measures: A study and new generalization of lower bounding distances. Proceedings of
            the VLDB Endowment, 16(8), 2019–2032.
     """
-    
+
     XUE, XLE = MakeEnvForSingleTS(x, w)
     YUE, YLE = MakeEnvForSingleTS(y, w)
     lenx = len(x)
     leny = len(y)
 
-    fixed_cost = 0 + min(swale_subcost(x[lenx-1], y[leny-1], epsilon, p, r), p)
+    fixed_cost = 0 + min(swale_subcost(x[lenx - 1], y[leny - 1], epsilon, p, r), p)
 
     y_dist = 0
-    for i in range(1, leny-1):
-    
+    for i in range(1, leny - 1):
+
         if y[i] > XUE[i]:
             y_dist += swale_subcost(y[i], XUE[i], epsilon, p, r)
         if y[i] < XLE[i]:
             y_dist += swale_subcost(y[i], XLE[i], epsilon, p, r)
-    
+
     x_dist = 0
-    for i in range(1, lenx-1):
-    
+    for i in range(1, lenx - 1):
+
         if x[i] > YUE[i]:
             x_dist += swale_subcost(x[i], YUE[i], epsilon, p, r)
         if x[i] < YLE[i]:
