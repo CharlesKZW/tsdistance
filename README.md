@@ -4,9 +4,8 @@
 </div>
 
 <!-- Short description -->
-<p align="center">
-  tsdistance provides distance measures (a.k.a. metrics) suitable for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, etc.
-</p>
+  tsdistance provides distance measures (a.k.a. metrics) suitable for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, etc. For details, please see the [documentation](https://tsdistance.readthedocs.io/en/latest/).
+
 
 ## Installation
 
@@ -80,9 +79,6 @@ After getting the data in the right format, a model can be trained. `tsdistance`
 - Log Global Alignment Kernel (LGAK)
 
 **Multivariate Distance Measures**
-*in progress*
+- *in progress*
 
-## Documentation
-
-The documentation is hosted at [tsdistance](https://tsdistance.readthedocs.io/en/latest/).
 
