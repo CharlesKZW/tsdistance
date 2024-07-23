@@ -13,6 +13,8 @@ An open-source Python library that offers functions (a.k.a. *distance measures*)
 
 from PyPi: ``python -m pip install tsdistance``
 
+This is **alpha software** with known ``Issues`` to be fixed, so use it with caution. Please provide feedback by openning ``Issues``  as they guide the developers on what to work on. 
+
 ## Examples
 
 ### 1. Compute the distance between two time series
