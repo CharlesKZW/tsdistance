@@ -2,12 +2,7 @@
 
 | Measure             | Tested   | Testing Method   | Notes/Comments   |
 |:--------------------|:---------|:-----------------|:-----------------|
-| MakeEnvForSingleTS  | No       |                  |                  |
 | ddtw                | No       |                  |                  |
-| ddtw_n              | No       |                  |                  |
-| ddtw_scb            | No       |                  |                  |
-| dev                 | No       |                  |                  |
-| dist                | No       |                  |                  |
 | dlcss               | No       |                  |                  |
 | dlcss_n             | No       |                  |                  |
 | dlcss_scb           | No       |                  |                  |
