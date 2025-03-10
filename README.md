@@ -4,7 +4,7 @@
 </div>
 
 <!-- Short description -->
-An open-source Python library that offers functions (a.k.a. *distance measures*) to compute the distance between time series. Distance measures in this library are suitable metrics for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, and more.
+An open-source Python library that offers distance measures functions to compute the distance/similarity between time series. Distance measures in this library are suitable metrics for various time series machine learning tasks, including classification, clustering, motif discovery, similarity search, and more.
   
   For details, please see the [documentation](https://tsdistance.readthedocs.io/en/latest/).
 
