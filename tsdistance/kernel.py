@@ -3,12 +3,7 @@ import math
 import numpy as np
 from scipy.spatial.distance import cdist
 
-
-def _as_series(ts):
-    array = np.asarray(ts, dtype=float)
-    if array.ndim == 1:
-        return array.reshape(-1, 1)
-    return array
+from ._series_utils import as_float_array, as_series_matrix
 
 
 def kdtw_distance(x, y, sigma):
@@ -145,7 +140,7 @@ def nextpow2(N):
 
 
 def PreservedEnergy(x, e):
-    series = np.asarray(x, dtype=float).reshape(-1)
+    series = as_float_array(x)
     fft = np.fft.fft(series, 2 ** nextpow2(2 * len(series) - 1))
     power = np.abs(fft) ** 2
     cumulative = np.cumsum(power) / np.sum(power)
@@ -223,8 +218,8 @@ def LGAK(x, y, sigma):
     :return: the LGAK distance
 
     """
-    x_arr = _as_series(x)
-    y_arr = _as_series(y)
+    x_arr = as_series_matrix(x)
+    y_arr = as_series_matrix(y)
     gram = -cdist(x_arr, y_arr, "sqeuclidean") / (2 * sigma**2)
     gram -= np.log(2 - np.exp(gram))
     kernel = np.exp(gram)
