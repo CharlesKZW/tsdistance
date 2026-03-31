@@ -7,5 +7,6 @@ setup(
     author='The DATUM Lab',
     author_email='your.email@example.com',
     url='https://github.com/CharlesKZW/tsdistance',
-    install_requires=['numpy', 'numba'],
+    install_requires=['numpy', 'numba', 'scipy'],
+    extras_require={'dev': ['pytest']},
 )

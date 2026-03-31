@@ -1,3 +1,5 @@
+import importlib
+
 import numpy as np
 
 
@@ -19,10 +21,32 @@ class OneNN(object):
     """
 
     def __init__(self, metric, metric_param=None, lb_metric=False, lb_param=None):
-        self.metric = metric
-        self.lb_metric = lb_metric
-        self.metric_param = metric_param
-        self.lb_param = lb_param
+        self.metric = self._resolve_metric(metric)
+        self.lb_metric = self._resolve_metric(lb_metric) if lb_metric else None
+        self.metric_param = self._normalize_params(metric_param)
+        self.lb_param = self._normalize_params(lb_param)
+        self.lb = self.lb_metric is not None
+
+    @staticmethod
+    def _normalize_params(params):
+        if params is None:
+            return ()
+        if isinstance(params, tuple):
+            return params
+        if isinstance(params, list):
+            return tuple(params)
+        return (params,)
+
+    @staticmethod
+    def _resolve_metric(metric):
+        if callable(metric):
+            return metric
+        if isinstance(metric, str):
+            for module_name in ("elastic", "lockstep", "kernel", "sliding"):
+                module = importlib.import_module(f"tsdistance.{module_name}")
+                if hasattr(module, metric):
+                    return getattr(module, metric)
+        raise ValueError("metric must be a callable or the name of a tsdistance measure")
 
     def fit(self, X, Xlabel):
         r"""
@@ -34,8 +58,11 @@ class OneNN(object):
         :type Xlabel: np.array
         :return: Fitted 1NN classifier
         """
-        self.X = X
-        self.Xlabel = Xlabel
+        self.X = [np.asarray(sample, dtype=float) for sample in X]
+        self.Xlabel = np.asarray(Xlabel)
+        if len(self.X) != len(self.Xlabel):
+            raise ValueError("X and Xlabel must contain the same number of samples")
+        return self
 
     def predict(self, Y):
         r"""
@@ -46,57 +73,39 @@ class OneNN(object):
         :return: Predicted class label for each data sample 
 
         """
+        queries = [np.asarray(sample, dtype=float) for sample in Y]
+        predictions = np.empty(len(queries), dtype=self.Xlabel.dtype)
+        pruned = 0
+        total = len(queries) * len(self.X)
 
-        if self.lb == True:
-            pruned = 0
-
-        test_class = np.zeros(Y.shape[0])
-
-        for idx_y, y in enumerate(Y):
-
+        for query_index, y in enumerate(queries):
             best_so_far = float("inf")
+            best_label = self.Xlabel[0]
 
-            lb_list = np.zeros(self.X.shape[0])
+            if self.lb:
+                lb_values = np.array(
+                    [self.lb_metric(x, y, *self.lb_param) for x in self.X], dtype=float
+                )
+                ordering = np.argsort(lb_values)
+                ordered_indices = ordering.tolist()
+            else:
+                lb_values = None
+                ordered_indices = list(range(len(self.X)))
 
-            for idx_x, x in enumerate(self.X):
+            for position, train_index in enumerate(ordered_indices):
+                x = self.X[train_index]
+                if self.lb:
+                    lb_dist = lb_values[train_index]
+                    if lb_dist > best_so_far:
+                        pruned += 1
+                        continue
+                actual_dist = self.metric(x, y, *self.metric_param)
+                if actual_dist < best_so_far:
+                    best_so_far = actual_dist
+                    best_label = self.Xlabel[train_index]
 
-                lb_dist = self.lb_metric(x, y, *self.lb_param)
+            predictions[query_index] = best_label
 
-                lb_list[idx_x] = lb_dist
-
-            ordering = np.argsort(lb_list)
-
-            self.X = self.X[ordering]
-            self.Xlabel = self.Xlabel[ordering]
-            lb_list = lb_list[ordering]
-
-            for idx_x, x in enumerate(self.X):
-
-                lb_dist = lb_list[idx_x]
-
-                if lb_dist < best_so_far:
-
-                    actual_dist = self.metric(x, y, *self.metric_param)
-
-                    if actual_dist < best_so_far:
-                        best_so_far = actual_dist
-                        test_class[idx_y] = self.Xlabel[idx_x]
-
-                if self.lb == True and lb_dist > best_so_far:
-                    pruned += 1
-
-                pruning_power = pruned / (Y.shape[0] * self.X.shape[0])
-
-                if self.lb == False:
-
-                    actual_dist = self.lb_metric(x, y, *self.lb_param)
-                    if actual_dist < best_so_far:
-                        best_so_far = actual_dist
-                        test_class[idx_y] = self.Xlabel[idx_x]
-
-                    pruning_power = 0
-
-        if self.lb == True:
-            return test_class, pruning_power
-        if self.lb == False:
-            return test_class
+        if self.lb:
+            return predictions, (pruned / total if total else 0.0)
+        return predictions

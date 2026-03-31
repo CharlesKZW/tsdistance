@@ -1,96 +1,51 @@
 import numpy as np
-import math
+
+
+def _as_float_array(ts):
+    return np.asarray(ts, dtype=float).reshape(-1)
+
+
+def _cross_correlation(x, y):
+    x_arr = _as_float_array(x)
+    y_arr = _as_float_array(y)
+    return np.correlate(x_arr, y_arr, mode="full")
 
 
 def NCC(x, y):
-    r"""
-    The formula for Normalized Cross-Correlation (:math:`NCC`) is: :math:`max(CC_{w}(\vec{x}, \vec{y}))`.
+    r"""Return the full cross-correlation sequence."""
 
-    :param x: a time series 
-    :type x: np.array
-    :param y: another time series
-    :type y: np.array
-    :return: the NCC distance
-    """
-
-    length = len(x)
-    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
-    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
-
-    lenr = len(r) - 1
-
-    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
-
-    return result
+    return _cross_correlation(x, y)
 
 
 def NCCb(x, y):
+    r"""Return the biased normalized cross-correlation sequence."""
 
-    r"""
-    The formula for Biased Normalized Cross-Correlation (:math:`NCC_b`) is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{m})`
-    
-
-    :param x: a time series 
-    :type x: np.array
-    :param y: another time series
-    :type y: np.array
-    :return: the NCCb distance
-    """
-
-    length = len(x)
-    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
-    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
-
-    lenr = len(r) - 1
-
-    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
-
-    return np.divide(result, length)
+    x_arr = _as_float_array(x)
+    y_arr = _as_float_array(y)
+    denom = float(max(len(x_arr), len(y_arr)))
+    if denom == 0:
+        return np.array([])
+    return _cross_correlation(x_arr, y_arr) / denom
 
 
 def NCCc(x, y):
+    r"""Return the coefficient normalized cross-correlation sequence."""
 
-    r"""
-    The formula for Coefficient Normalized Cross-Correlation :math:`NCC_u` is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{\vert\vert{\vec{x}}\vert\vert\cdot\vert\vert{\vec{y}}\vert\vert})`
-    
-    :param x: a time series 
-    :type x: np.array
-    :param y: another time series
-    :type y: np.array
-    :return: the NCCc distance
-    """
-    length = len(x)
-    fftlen = 2 ** math.ceil(math.log2(abs(2 * length - 1)))
-    r = np.fft.ifft(np.multiply(np.fft.fft(x, fftlen), np.conj(np.fft.fft(y, fftlen))))
-
-    lenr = len(r) - 1
-
-    result = np.append(r[lenr - length + 2 : lenr + 1], r[0:length])
-
-    return np.divide(result, np.linalg.norm(x) * np.linalg.norm(y))
+    x_arr = _as_float_array(x)
+    y_arr = _as_float_array(y)
+    denom = np.linalg.norm(x_arr) * np.linalg.norm(y_arr)
+    if denom == 0:
+        return np.zeros(len(x_arr) + len(y_arr) - 1, dtype=float)
+    return _cross_correlation(x_arr, y_arr) / denom
 
 
 def NCCu(x, y):
+    r"""Return the unbiased normalized cross-correlation sequence."""
 
-    r"""
-    The formula for Unbiased Normalized Cross-Correlation (:math:`NCC_u`) is: :math:`max(\frac{CC_{w}(\vec{x}, \vec{y})}{m-|w-m|})`
-
-    :param x: a time series 
-    :type x: np.array
-    :param y: another time series
-    :type y: np.array
-    :return: the NCCu distance
-    """
-
-    result = np.correlate(x, y, "full")
-
-    max = math.ceil(len(result) / 2)
-
-    a = []
-    for i in range(result.size):
-        if i > max - 1:
-            a.append(2 * max - (i + 1))
-        else:
-            a.append(i + 1)
-
-    return np.divide(result, a)
+    x_arr = _as_float_array(x)
+    y_arr = _as_float_array(y)
+    corr = _cross_correlation(x_arr, y_arr)
+    overlap = np.correlate(
+        np.ones(len(x_arr), dtype=float), np.ones(len(y_arr), dtype=float), mode="full"
+    )
+    return corr / overlap

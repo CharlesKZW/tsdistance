@@ -1177,3 +1177,136 @@ def square_chord(x, y):
         sum += ((x[i] ** (1 / 2)) - (y[i]) ** (1 / 2)) ** 2
 
     return sum
+
+
+def _lockstep_pair(x, y):
+    x_arr = np.asarray(x, dtype=float).reshape(-1)
+    y_arr = np.asarray(y, dtype=float).reshape(-1)
+    if x_arr.shape[0] != y_arr.shape[0]:
+        return None, None
+    return x_arr, y_arr
+
+
+def _probability_pair(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return None, None
+    if np.any(x_arr < 0) or np.any(y_arr < 0):
+        return None, None
+    x_sum = float(np.sum(x_arr))
+    y_sum = float(np.sum(y_arr))
+    if x_sum <= 0 or y_sum <= 0:
+        return None, None
+    return x_arr / x_sum, y_arr / y_sum
+
+
+def Intersection(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    return float(np.sum(np.minimum(x_arr, y_arr)))
+
+
+def motyka(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    denom = float(np.sum(x_arr) + np.sum(y_arr))
+    if denom == 0:
+        return -1
+    return float(np.sum(np.minimum(x_arr, y_arr)) / denom)
+
+
+def tanimoto(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    denom = float(np.sum(np.maximum(x_arr, y_arr)))
+    if denom == 0:
+        return -1
+    return float(np.sum(np.abs(x_arr - y_arr)) / denom)
+
+
+def harmonicmean(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    denom = x_arr + y_arr
+    values = np.divide(
+        2.0 * x_arr * y_arr,
+        denom,
+        out=np.zeros_like(denom, dtype=float),
+        where=denom != 0,
+    )
+    return float(np.sum(values))
+
+
+def jaccard(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    numerator = float(np.sum((x_arr - y_arr) ** 2))
+    denominator = float(np.sum(x_arr**2) + np.sum(y_arr**2) - np.sum(x_arr * y_arr))
+    if denominator == 0:
+        return -1
+    return numerator / denominator
+
+
+def bhattacharyya(x, y):
+    x_prob, y_prob = _probability_pair(x, y)
+    if x_prob is None:
+        return -1
+    bc = float(np.sum(np.sqrt(x_prob * y_prob)))
+    if bc <= 0:
+        return -1
+    return -math.log(bc)
+
+
+def hellinger(x, y):
+    x_prob, y_prob = _probability_pair(x, y)
+    if x_prob is None:
+        return -1
+    return float(np.sqrt(np.sum((np.sqrt(x_prob) - np.sqrt(y_prob)) ** 2)) / np.sqrt(2.0))
+
+
+def matusita(x, y):
+    x_prob, y_prob = _probability_pair(x, y)
+    if x_prob is None:
+        return -1
+    return float(np.sqrt(np.sum((np.sqrt(x_prob) - np.sqrt(y_prob)) ** 2)))
+
+
+def clark(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    denom = x_arr + y_arr
+    if np.any(denom == 0):
+        return -1
+    return float(np.sqrt(np.sum((np.abs(x_arr - y_arr) / denom) ** 2)))
+
+
+def emanon4(x, y):
+    x_arr, y_arr = _lockstep_pair(x, y)
+    if x_arr is None:
+        return -1
+    denom = np.maximum(x_arr, y_arr)
+    if np.any(denom == 0):
+        return -1
+    return float(np.sum(((x_arr - y_arr) ** 2) / (denom**2)))
+
+
+def ED(x, y):
+    return abs_euclidean(x, y)
+
+
+def jansen_shannon(x, y):
+    return jensen_shannon(x, y)
+
+
+def kulczynski(x, y):
+    return Kulczynski(x, y)
+
+
+def square_chord(x, y):
+    return Square_chord(x, y)

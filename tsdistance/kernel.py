@@ -1,11 +1,20 @@
-import numpy as np
 import math
+
+import numpy as np
 from scipy.spatial.distance import cdist
 
+
+def _as_series(ts):
+    array = np.asarray(ts, dtype=float)
+    if array.ndim == 1:
+        return array.reshape(-1, 1)
+    return array
+
+
 def kdtw_distance(x, y, sigma):
-    factor = 1.0/3
+    factor = 1.0 / 3.0
     minprob = 10 ** (-20)
-    return factor * (math.exp(-sigma * ((x-y)**2))+minprob)
+    return factor * (math.exp(-(((x - y) ** 2) / sigma)) + minprob)
 
 def kdtw(x, y, sigma):
 
@@ -130,24 +139,33 @@ def kdtw(x, y, sigma):
 
 def nextpow2(N):
     n = 1
-    while n < N: n *= 2
+    while n < N:
+        n *= 2
     return n
 
+
 def PreservedEnergy(x, e):
-    FFTx = np.fft.fft(x, 2**(nextpow2(2*len(x)-1))) 
-    NormCumSum = np.cumsum(math.abs(FFTx**2))/np.sum(math.abs(FFTx**2))
-    k = np.argwhere(NormCumSum >= (e /2))[0]
-    FFTx[k+1:len(FFTx)-k-1] = 0 
-    return FFTx
+    series = np.asarray(x, dtype=float).reshape(-1)
+    fft = np.fft.fft(series, 2 ** nextpow2(2 * len(series) - 1))
+    power = np.abs(fft) ** 2
+    cumulative = np.cumsum(power) / np.sum(power)
+    cutoff = int(np.argwhere(cumulative >= (e / 2.0))[0][0])
+    filtered = fft.copy()
+    filtered[cutoff + 1 : len(filtered) - cutoff - 1] = 0
+    return filtered
 
 
 def NCC(x, y, e):
     FFTx = PreservedEnergy(x, e)
     FFTy = PreservedEnergy(y, e)
-    return np.fft.ifft(FFTx * FFTy)/np.dot(np.linalg.norm(x),np.linalg.norm(y))
+    denom = np.linalg.norm(x) * np.linalg.norm(y)
+    if denom == 0:
+        return np.zeros_like(FFTx, dtype=float)
+    return np.fft.ifft(FFTx * np.conj(FFTy)).real / denom
+
 
 def SumNCC(x, y, gamma, e):
-    return np.sum(math.exp(gamma * NCC(x, y, e)))
+    return float(np.sum(np.exp(gamma * NCC(x, y, e))))
 
 
 def SINK(x, y, gamma, e):
@@ -182,7 +200,9 @@ def SINK(x, y, gamma, e):
     
     """
 
-    return SumNCC(x, y, gamma, e) / math.sqrt(SumNCC(x, x, gamma, e)*SumNCC(x, x, gamma, e))
+    return SumNCC(x, y, gamma, e) / math.sqrt(
+        SumNCC(x, x, gamma, e) * SumNCC(y, y, gamma, e)
+    )
 
 
 def LGAK(x, y, sigma):
@@ -203,16 +223,19 @@ def LGAK(x, y, sigma):
     :return: the LGAK distance
 
     """
-
-    K = np.exp(-(cdist(x, y, "sqeuclidean") / (2 * sigma ** 2) + np.log(2 - np.exp(cdist(x, y, "sqeuclidean") / (2 * sigma ** 2)))))
-
-    csum = np.zeros((len(x)+1, len(y)+1))
-    csum[0][0] = 1
-    for i in range(len(x)):
-        for j in range(len(y)):
-            csum[i+1][j+1] = (csum[i, j + 1] + csum[i + 1, j] + csum[i, j]) * K[i][j]
-
-    return csum[len(x)][len(y)]
+    x_arr = _as_series(x)
+    y_arr = _as_series(y)
+    gram = -cdist(x_arr, y_arr, "sqeuclidean") / (2 * sigma**2)
+    gram -= np.log(2 - np.exp(gram))
+    kernel = np.exp(gram)
+    csum = np.zeros((kernel.shape[0] + 1, kernel.shape[1] + 1), dtype=float)
+    csum[0, 0] = 1.0
+    for i in range(kernel.shape[0]):
+        for j in range(kernel.shape[1]):
+            csum[i + 1, j + 1] = (
+                csum[i, j + 1] + csum[i + 1, j] + csum[i, j]
+            ) * kernel[i, j]
+    return float(csum[-1, -1])
 
     
 

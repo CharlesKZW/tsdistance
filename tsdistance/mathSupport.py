@@ -1,91 +1,70 @@
 import numpy as np
-from numba import jit
-import math
 
 
-@jit(nopython = True)  
+def _as_float_array(ts):
+    return np.asarray(ts, dtype=float).reshape(-1)
+
+
+def make_envelopes(ts, w):
+    series = _as_float_array(ts)
+    length = series.shape[0]
+    if length == 0:
+        return np.array([]), np.array([])
+    if w is None:
+        w = length
+    w = int(w)
+    upper = np.empty(length, dtype=float)
+    lower = np.empty(length, dtype=float)
+    for idx in range(length):
+        start = max(0, idx - w)
+        stop = min(length, idx + w + 1)
+        window = series[start:stop]
+        upper[idx] = np.max(window)
+        lower[idx] = np.min(window)
+    return upper, lower
+
+
 def MakeEnvForSingleTS(ts, w):
-    ts_length = len(ts)
-    UE = np.zeros(ts_length)
-    LE = np.zeros(ts_length)
+    return make_envelopes(ts, w)
 
-    for j in range(ts_length):
-            wmin = max(0, j-w)
-            wmax = min(ts_length-1, j+w)
 
-            UE[j] = max(ts[wmin: wmax+1])
-            LE[j] = min(ts[wmin: wmax+1])
-    
-    return UE, LE
+def lower_b(ts, w):
+    return make_envelopes(ts, w)[1]
 
-@jit(nopython = True)
-def make_envelopes(X, w): # used to compute lower and upper envelopes
-    num_columns = len(X)
-    upper_envelopes = np.zeros(num_columns)
-    lower_envelopes = np.zeros(num_columns)
-    
-    for j in range(num_columns):
-        wmin = max(0, j-w)
-        wmax = min(num_columns-1, j+w)
 
-        upper_envelopes[j] = max(X[wmin: wmax+1])
-        lower_envelopes[j] = min(X[wmin: wmax+1])
-            
-    return upper_envelopes, lower_envelopes
+def lower_b_n(ts, w):
+    return lower_b(ts, w)
 
-def dev(X):
-    lenx = X.shape[1]
-    dX = (2 * X[:, 1:lenx-1] + X[:, 2:lenx] - 3*X[:, 0:lenx-2])/4
-    first_col = np.array([dX[:, 0]])
-    last_col = np.array([dX[:, dX.shape[1]-1]])
-    dX = np.concatenate((first_col.T, dX), axis = 1)
-    dX = np.concatenate((dX, last_col.T), axis =1)
-    return dX
 
-@jit(nopython = True)
 def lcss_subcost(x, y, epsilon):
-    if abs(x-y) <= epsilon: 
-        r = 1
-    else:
-        r = 0
-    return r
-
-def lower_b_n(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1])
-  return b
+    return 1 if abs(x - y) <= epsilon else 0
 
 
-@jit(nopython = True)
-def lower_b(t,w):
-  b = np.zeros(len(t))
-  for i in range(len(t)):
-    b[i] = min(t[max(0,i-w):min(len(t)-1,i+w)+1])
-  return b
+def swale_subcost(x, y, epsilon, p, r):
+    return 0 if abs(x - y) <= epsilon else p
 
 
-@jit(nopython = True)
-def swale_subcost(x, y, epsilon, p , r):
-    if abs(x-y) <= epsilon:
-        cost = r
-    else:
-        cost = p
+def msm_dist(new_point, x_prev, y_curr, c):
+    if (x_prev <= new_point <= y_curr) or (x_prev >= new_point >= y_curr):
+        return c
+    return c + min(abs(new_point - x_prev), abs(new_point - y_curr))
 
-    return cost
 
-@jit(nopython=True)
-def msm_dist(new, x, y, c):
-    if ((x <= new) and (new <= y)) or ((y <= new) and (new <= x)):
-        dist = c
-    else:
-        dist = c + min(abs(new - x), abs(new - y))
-    return dist
-
-@jit(nopython = True)
 def edr_subcost(x, y, epsilon):
-    if abs(x-y) <= epsilon:
-        cost = 0
-    else:
-        cost = 1
-    return cost
+    return 0 if abs(x - y) <= epsilon else 1
+
+
+def dev(ts):
+    series = np.asarray(ts, dtype=float)
+    if series.ndim == 1:
+        series = series.reshape(1, -1)
+    if series.shape[1] < 3:
+        raise ValueError("Derivative-based measures require at least 3 time points.")
+    derivative = np.empty((series.shape[0], series.shape[1] - 2), dtype=float)
+    for row in range(series.shape[0]):
+        for idx in range(1, series.shape[1] - 1):
+            derivative[row, idx - 1] = (
+                (series[row, idx] - series[row, idx - 1])
+                + (series[row, idx + 1] - series[row, idx - 1]) / 2.0
+            ) / 2.0
+    return derivative
